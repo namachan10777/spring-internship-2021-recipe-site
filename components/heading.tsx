@@ -12,12 +12,16 @@ type HeadingProps = {
 const Heading: React.FC<HeadingProps> = (props: HeadingProps) => {
   // TODO: dummy image url
   return (
-    <section className="flex flex-row m-1">
+    <section className="flex flex-row my-1 border-b-2 p-2">
       <Link href={`/${props.id}`}>
-        <img src={props.image_url ? props.image_url : 'dummy'} alt={props.title} className="w-5/12 flex-shrink-0" />
+        <img
+          src={props.image_url ? props.image_url : 'dummy'}
+          alt={props.title}
+          className="w-5/12 flex-shrink-0 my-auto"
+        />
       </Link>
       <div className="ml-2">
-        <header className="text-xl mb-1">
+        <header className="text-lg mb-1 font-bold">
           <Link href={`/${props.id}`}>{props.title}</Link>
         </header>
         <p>{props.description}</p>

@@ -41,7 +41,7 @@ export default function Home(props: HomeProps) {
         />
       ))
     ) : (
-      <span className="text-xl">レシピが見つかりませんでした</span>
+      <span className="text-2xl">レシピが見つかりませんでした</span>
     );
   return (
     <div>
@@ -50,14 +50,28 @@ export default function Home(props: HomeProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <header>
-        <h1 className="text-3xl">クッキングパッド</h1>
+        <h1 className="bg-gray-300 p-2 text-xl font-bold">クッキングパッド</h1>
       </header>
 
-      <Search keyword={search} onSubmit={(searchWord) => handleSearch(searchWord)} />
+      <div className="my-4 mx-2">
+        <Search keyword={search} onSubmit={(searchWord) => handleSearch(searchWord)} />
+      </div>
       <main>{main_contents}</main>
-      <footer>
-        {prevExists ? <Link href={`/${genQuery(page - 1, search)}`}>前のページ</Link> : null}
-        {nextExists ? <Link href={`/${genQuery(page + 1, search)}`}>次のページ</Link> : null}
+      <footer className="p-8 flex flex-row justify-between">
+        {prevExists ? (
+          <span>
+            <Link href={`/${genQuery(page - 1, search)}`}>前のページ</Link>
+          </span>
+        ) : (
+          <span></span>
+        )}
+        {nextExists ? (
+          <span>
+            <Link href={`/${genQuery(page + 1, search)}`}>次のページ</Link>
+          </span>
+        ) : (
+          <span></span>
+        )}
       </footer>
     </div>
   );

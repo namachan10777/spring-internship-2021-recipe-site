@@ -37,34 +37,37 @@ export default function RecipePageProps(props: RecipePageProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <header>
-        <h2 className="text-3xl">
+        <h2 className="bg-gray-300 p-2 text-xl font-bold">
           <Link href="/">クッキングパッド</Link>
         </h2>
       </header>
-      <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />
+      <div className="my-4 mx-2">
+        <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />
+      </div>
       {props.image_url ? <img className="w-full" src={props.image_url} alt={props.title} /> : null}
-      <h1 className="text-4xl">{props.title}</h1>
-      <div className="flex flex-row justify-between">
+      <h1 className="text-2xl font-bold p-2">{props.title}</h1>
+      <div className="flex flex-row justify-between m-2">
         <span className="block">{props.author.user_name}</span>
         <span className="block">{props.published_at}</span>
       </div>
+      <p className="p-4">{props.description}</p>
       <section>
-        <header className="bg-gray-300 text-xl">材料</header>
-        <ul className="list-inside list-disc">
+        <header className="px-4 bg-gray-300 text-lg font-bold">材料</header>
+        <ul role="list">
           {props.ingredients.map((ingredient, i) => (
-            <li key={i}>
-              <span>{ingredient.name}</span>
-              <span>{ingredient.quantity}</span>
+            <li key={i} className="border-b-2 flex justify-between p-2">
+              <div>{ingredient.name}</div>
+              <div>{ingredient.quantity}</div>
             </li>
           ))}
         </ul>
       </section>
       <section>
-        <header className="bg-gray-300 text-xl">手順</header>
+        <header className="px-4 bg-gray-300 text-lg font-bold">手順</header>
         <ol className="list-inside list-decimal">
           {props.steps.map((step, i) => (
-            <li key={i}>
-              {step}
+            <li key={i} className="border-b-2 p-2 font-bold">
+              <span className="ml-1 font-normal">{step}</span>
             </li>
           ))}
         </ol>
