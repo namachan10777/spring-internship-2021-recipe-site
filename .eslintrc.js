@@ -23,10 +23,26 @@ module.exports = {
       },
     ],
     'no-use-before-define': [0],
+    'import/extensions': [
+      2,
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
   },
   settings: {
     react: {
       version: 'detect',
+    },
+    'import/resolver': {
+      node: {
+        extensions: ['.ts', '.tsx', 'js', '.d.ts'],
+        paths: ['./src', './node_modules'],
+      },
     },
   },
 };

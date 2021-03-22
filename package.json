@@ -20,7 +20,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint pages/**.tsx",
-    "lint-fix": "eslint --fix pages/**.tsx",
+    "lint-fix": "eslint --fix pages/**.tsx lib/**.ts",
     "typecheck": "tsc",
     "fmt": "prettier -w pages/**.tsx .eslintrc.js components/**.tsx",
     "fmt-check": "prettier --check pages/**.tsx"

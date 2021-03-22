@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
+import { MdSearch } from 'react-icons/md';
 import { getRecipes, Recipe } from '../lib/recipe';
 import Heading from '../components/heading';
-import { MdSearch } from 'react-icons/md';
 
 const COLUMN_MAX = 4;
 
@@ -14,23 +14,27 @@ export default function Home() {
   const [searchWord, setSearchWord] = useState('');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [page, setPage] = useState(0);
+  const [totalPageN, setTotalPageN] = useState(0);
   useEffect(() => {
     (async () => {
-      const recipes = await getRecipes();
+      const fetchedRecipes = await getRecipes();
       const pageStr = router.query.page;
-      const pageOrNaN = pageStr && typeof pageStr == 'string' ? parseInt(pageStr, 10) : 0;
-      const page = pageOrNaN ? pageOrNaN : 0;
-      const searchWordOfPage = router.query.search && typeof router.query.search == 'string' ? router.query.search : '';
-      setSearchWordOfPage(searchWordOfPage);
-      setSearchWord(searchWordOfPage);
-      setPage(page);
-      setRecipes(recipes.slice(page * COLUMN_MAX, (page + 1) * COLUMN_MAX));
+      const pageOrNaN = pageStr && typeof pageStr === 'string' ? parseInt(pageStr, 10) : 0;
+      const parsedPage = Number.isNaN(pageOrNaN) ? 0 : pageOrNaN;
+      const parsedSearchWordOfPage =
+        router.query.search && typeof router.query.search === 'string' ? router.query.search : '';
+      setSearchWordOfPage(parsedSearchWordOfPage);
+      setSearchWord(parsedSearchWordOfPage);
+      setPage(parsedPage);
+      setTotalPageN(Math.ceil(fetchedRecipes.length / COLUMN_MAX));
+      setRecipes(fetchedRecipes.slice(parsedPage * COLUMN_MAX, (parsedPage + 1) * COLUMN_MAX));
     })();
   }, [router]);
-  const genPageQuery = (page: number) => page == 0 ? '' : `page=${page}`;
-  const genSearchQuery = (search: string) => search == '' ? '' : `search=${search}`;
-  const genQuery = (page: number, searh: string) => {
-    return [genPageQuery(page), genSearchQuery(searh)].filter(query => query != '').join('&');
+  const genPageQuery = (p: number) => (p === 0 ? '' : `page=${p}`);
+  const genSearchQuery = (s: string) => (s === '' ? '' : `search=${s}`);
+  const genQuery = (p: number, s: string): string => {
+    const queryString = [genPageQuery(p), genSearchQuery(s)].filter((query) => query !== '').join('&');
+    return queryString === '' ? '' : `?${queryString}`;
   };
   return (
     <div>
@@ -61,8 +65,8 @@ export default function Home() {
         ))}
       </main>
       <footer>
-        <Link href={`/?${genQuery(page - 1, searchWordOfPage)}`}>前のページ</Link>
-        <Link href={`/?${genQuery(page + 1, searchWordOfPage)}`}>次のページ</Link>
+        {page > 0 ? <Link href={`/${genQuery(page - 1, searchWordOfPage)}`}>前のページ</Link> : null}
+        {page + 1 < totalPageN ? <Link href={`/${genQuery(page + 1, searchWordOfPage)}`}>次のページ</Link> : null}
       </footer>
     </div>
   );
