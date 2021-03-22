@@ -1,5 +1,8 @@
 # spring-internship-2021-recipe-site
 
+[![Node.js CI](https://github.com/namachan10777/spring-internship-2021-recipe-site/actions/workflows/node.js.yml/badge.svg)](https://github.com/namachan10777/spring-internship-2021-recipe-site/actions/workflows/node.js.yml)
+
+
 Cookpad Online Spring Internship 2021 のリポジトリです。インターンシップ参加者はこのリポジトリを fork してアプリケーションを実装してください。
 
 ## Getting Started
