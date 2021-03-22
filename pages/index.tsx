@@ -2,10 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/dist/client/router';
 import { Recipe } from '../lib/recipe';
 import Heading from '../components/heading';
 import Search from '../components/search';
-import { useRouter } from 'next/dist/client/router';
 
 type HomeProps = {
   recipes: Recipe[];
@@ -63,14 +63,14 @@ export default function Home(props: HomeProps) {
             <Link href={`/${genQuery(page - 1, search)}`}>前のページ</Link>
           </span>
         ) : (
-          <span></span>
+          <span />
         )}
         {nextExists ? (
           <span>
             <Link href={`/${genQuery(page + 1, search)}`}>次のページ</Link>
           </span>
         ) : (
-          <span></span>
+          <span />
         )}
       </footer>
     </div>
@@ -102,7 +102,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         prevExists: res.links.prev !== undefined,
       },
     };
-  } else {
+  } 
     return {
       props: {
         page,
@@ -112,5 +112,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         prevExists: false,
       },
     };
-  }
+  
 };

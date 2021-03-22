@@ -1,10 +1,10 @@
 import React from 'react';
 import Head from 'next/head';
-import { Recipe } from '../lib/recipe';
 import { GetServerSideProps } from 'next';
-import Search from '../components/search';
 import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
+import Search from '../components/search';
+import { Recipe } from '../lib/recipe';
 
 type RecipePageProps = {
   title: string;
@@ -98,14 +98,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           ingredients: res.ingredients,
         },
       };
-    } else {
+    } 
       return {
         notFound: true,
       };
-    }
-  } else {
+    
+  } 
     return {
       notFound: true,
     };
-  }
+  
 };
