@@ -54,9 +54,7 @@ export default function Home(props: HomeProps) {
       </main>
       <footer>
         {page > 0 ? <Link href={`/${genQuery(page - 1, search)}`}>前のページ</Link> : null}
-        {page + 1 < totalPage ? (
-          <Link href={`/${genQuery(page + 1, search)}`}>次のページ</Link>
-        ) : null}
+        {page + 1 < totalPage ? <Link href={`/${genQuery(page + 1, search)}`}>次のページ</Link> : null}
       </footer>
     </div>
   );
