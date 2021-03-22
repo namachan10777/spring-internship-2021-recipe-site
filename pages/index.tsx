@@ -27,9 +27,17 @@ export default function Home() {
         <h1>クッキングパッド</h1>
       </header>
       <main>
-        <input type="text" value={searchWord} onChange={(e) => setSearchWord(e.target.value)} />
-        <button>検索</button>
-        {recipes.map((recipe) => <Heading title={recipe.title} description={recipe.description} image_url={recipe.image_url}/>)}
+        <div className="border border-black rounded-md p-1 inline-flex w-full items-end">
+          <span className="flex-shrink-0">虫眼鏡</span>
+          <input type="text" placeholder="検索" value={searchWord} onChange={(e) => setSearchWord(e.target.value)} className="mt-1 flex-shrink w-full"/>
+        </div>
+        {recipes.map((recipe) => (
+          <Heading
+            key={recipe.id}
+            title={recipe.title}
+            description={recipe.description}
+            image_url={recipe.image_url} />
+        ))}
       </main>
       <footer></footer>
     </div>
