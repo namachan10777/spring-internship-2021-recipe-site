@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import { Recipe } from '../lib/recipe';
+import 'tailwindcss/tailwind.css';
 import Heading from '../components/heading';
 import Search from '../components/search';
 
