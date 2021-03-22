@@ -38,12 +38,17 @@ export default function RecipePageProps(props: RecipePageProps) {
         <link rel="icon" href="/favicon.ico" />
         <meta property="og:title" content={props.title} />
         <meta property="og:description" content={props.description} />
-        <meta property="og:type" content="article"/>
-        <meta property="og:article:author" content={props.author.user_name}/>
-        <meta property="og:article:published_time" content={props.published_at}/>
-        <meta property="og:article:modified_time" content={props.published_at}/>
-        <meta property="og:article:section" content="Cooking"/>
-        <meta property="og:image" content={props.image_url ? props.image_url : ""} />
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content={props.author.user_name} />
+        <meta property="og:article:published_time" content={props.published_at} />
+        <meta property="og:article:modified_time" content={props.published_at} />
+        <meta property="og:article:section" content="Cooking" />
+        <meta property="og:image" content={props.image_url ? props.image_url : ''} />
+        <meta name="twitter:card" content="summary_larget_image" />
+        <meta name="twitter:image:src" content={props.image_url ? props.image_url : ''} />
+        <meta name="twitter:description" content={props.description} />
+        <meta name="twitter:title" content={props.title} />
+        <meta name="twitter:site" content="@namachan10777" />
       </Head>
       <header>
         <h2 className="bg-gray-300 p-2 text-xl font-bold">
