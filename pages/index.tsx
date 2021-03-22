@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import { MdSearch } from 'react-icons/md';
 import { Recipe } from '../lib/recipe';
 import Heading from '../components/heading';
+import Search from '../components/search';
+import { useRouter } from 'next/dist/client/router';
 
 type HomeProps = {
   recipes: Recipe[];
@@ -15,18 +16,29 @@ type HomeProps = {
 };
 
 export default function Home(props: HomeProps) {
+  const router = useRouter();
   const { search, page, recipes, nextExists, prevExists } = props;
-  const [searchWord, setSearchWord] = useState(search);
   const genPageQuery = (p: number) => (p === 0 ? '' : `page=${p}`);
   const genSearchQuery = (s: string) => (s === '' ? '' : `search=${s}`);
   const genQuery = (p: number, s: string): string => {
     const queryString = [genPageQuery(p), genSearchQuery(s)].filter((query) => query !== '').join('&');
     return queryString === '' ? '' : `?${queryString}`;
   };
+  const handleSearch = (searchWord: string) => {
+    if (search !== searchWord) {
+      router.push(`/?search=${searchWord}`);
+    }
+  };
   const main_contents =
     recipes.length > 0 ? (
       recipes.map((recipe) => (
-        <Heading key={recipe.id} title={recipe.title} description={recipe.description} image_url={recipe.image_url} />
+        <Heading
+          id={recipe.id}
+          key={recipe.id}
+          title={recipe.title}
+          description={recipe.description}
+          image_url={recipe.image_url}
+        />
       ))
     ) : (
       <span className="text-xl">レシピが見つかりませんでした</span>
@@ -40,24 +52,9 @@ export default function Home(props: HomeProps) {
       <header>
         <h1 className="text-3xl">クッキングパッド</h1>
       </header>
-      <main>
-        <form className="border border-black rounded-md p-1 flex w-full items-center">
-          <div>
-            <MdSearch className="text-xl" />
-          </div>
-          <div className="w-full">
-            <input
-              type="text"
-              name="search"
-              placeholder="検索"
-              value={searchWord}
-              onChange={(e) => setSearchWord(e.target.value)}
-              className="text-xl ml-1 flex-shrink w-full"
-            />
-          </div>
-        </form>
-        {main_contents}
-      </main>
+
+      <Search keyword={search} onSubmit={(searchWord) => handleSearch(searchWord)} />
+      <main>{main_contents}</main>
       <footer>
         {prevExists ? <Link href={`/${genQuery(page - 1, search)}`}>前のページ</Link> : null}
         {nextExists ? <Link href={`/${genQuery(page + 1, search)}`}>次のページ</Link> : null}
