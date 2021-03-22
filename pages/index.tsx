@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import queryString from 'query-string';
 import { getRecipes, Recipe } from '../lib/recipe';
-import Heading from './heading';
+import Heading from '../components/heading';
 
 export default function Home() {
   const router = useRouter();
