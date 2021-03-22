@@ -98,14 +98,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           ingredients: res.ingredients,
         },
       };
-    } 
-      return {
-        notFound: true,
-      };
-    
-  } 
+    }
     return {
       notFound: true,
     };
-  
+  }
+  return {
+    notFound: true,
+  };
 };

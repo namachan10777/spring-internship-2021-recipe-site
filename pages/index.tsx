@@ -103,15 +103,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         prevExists: res.links.prev !== undefined,
       },
     };
-  } 
-    return {
-      props: {
-        page,
-        search,
-        recipes: [],
-        nextExists: false,
-        prevExists: false,
-      },
-    };
-  
+  }
+  return {
+    props: {
+      page,
+      search,
+      recipes: [],
+      nextExists: false,
+      prevExists: false,
+    },
+  };
 };
