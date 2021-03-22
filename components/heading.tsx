@@ -1,6 +1,7 @@
 import * as React from 'react';
 import 'tailwindcss/tailwind.css';
 import Link from 'next/link';
+import 'tailwindcss/tailwind.css';
 
 type HeadingProps = {
   id: number;

@@ -5,6 +5,7 @@ import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
 import Search from '../components/search';
 import { Recipe } from '../lib/recipe';
+import 'tailwindcss/tailwind.css';
 
 type RecipePageProps = {
   title: string;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MdSearch } from 'react-icons/md';
+import 'tailwindcss/tailwind.css';
 
 export type SearhProps = {
   onSubmit: (keyword: string) => void;
