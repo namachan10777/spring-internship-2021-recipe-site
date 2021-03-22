@@ -6,7 +6,7 @@ import { MdSearch } from 'react-icons/md';
 import { Recipe } from '../lib/recipe';
 import Heading from '../components/heading';
 
-type PageInfo = {
+type HomeProps = {
   recipes: Recipe[];
   page: number;
   search: string;
@@ -14,13 +14,8 @@ type PageInfo = {
   prevExists: boolean;
 };
 
-type HomeProps = {
-  pageInfo: PageInfo;
-};
-
 export default function Home(props: HomeProps) {
-  const { pageInfo } = props;
-  const { search, page, recipes, nextExists, prevExists } = pageInfo;
+  const { search, page, recipes, nextExists, prevExists } = props;
   const [searchWord, setSearchWord] = useState(search);
   const genPageQuery = (p: number) => (p === 0 ? '' : `page=${p}`);
   const genSearchQuery = (s: string) => (s === '' ? '' : `search=${s}`);
@@ -28,6 +23,14 @@ export default function Home(props: HomeProps) {
     const queryString = [genPageQuery(p), genSearchQuery(s)].filter((query) => query !== '').join('&');
     return queryString === '' ? '' : `?${queryString}`;
   };
+  const main_contents =
+    recipes.length > 0 ? (
+      recipes.map((recipe) => (
+        <Heading key={recipe.id} title={recipe.title} description={recipe.description} image_url={recipe.image_url} />
+      ))
+    ) : (
+      <span className="text-xl">レシピが見つかりませんでした</span>
+    );
   return (
     <div>
       <Head>
@@ -38,23 +41,22 @@ export default function Home(props: HomeProps) {
         <h1 className="text-3xl">クッキングパッド</h1>
       </header>
       <main>
-        <div className="border border-black rounded-md p-1 flex w-full items-center">
+        <form className="border border-black rounded-md p-1 flex w-full items-center">
           <div>
             <MdSearch className="text-xl" />
           </div>
           <div className="w-full">
             <input
               type="text"
+              name="search"
               placeholder="検索"
               value={searchWord}
               onChange={(e) => setSearchWord(e.target.value)}
               className="text-xl ml-1 flex-shrink w-full"
             />
           </div>
-        </div>
-        {recipes.map((recipe) => (
-          <Heading key={recipe.id} title={recipe.title} description={recipe.description} image_url={recipe.image_url} />
-        ))}
+        </form>
+        {main_contents}
       </main>
       <footer>
         {prevExists ? <Link href={`/${genQuery(page - 1, search)}`}>前のページ</Link> : null}
@@ -67,24 +69,37 @@ export default function Home(props: HomeProps) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const pageRaw = Number(context.query.page);
   const page = Number.isNaN(pageRaw) ? 1 : Math.max(pageRaw, 1);
-  const search = context.query.search === undefined ? '' : context.params?.search;
-  const api_res = await fetch(`https://internship-recipe-api.ckpd.co/recipes?page=${page}`, {
+  const search = context.query.search === undefined ? '' : context.query.search;
+  const endPointAndQuery =
+    search === '' || typeof search !== 'string'
+      ? `recipes?page=${page}`
+      : `search?page=${page}&keyword=${encodeURI(search)}`;
+  const api_res = await fetch(`https://internship-recipe-api.ckpd.co/${endPointAndQuery}`, {
     method: 'GET',
     headers: new Headers({
       'X-Api-Key': process.env.COOKPAD_API_KEY as string,
     }),
   });
-  const res = await api_res.json();
-  console.log(res);
-  return {
-    props: {
-      pageInfo: {
+  if (api_res.status == 200) {
+    const res = await api_res.json();
+    return {
+      props: {
         page,
         search,
         recipes: res.recipes,
         nextExists: res.links.next !== undefined,
         prevExists: res.links.prev !== undefined,
       },
-    },
-  };
+    };
+  } else {
+    return {
+      props: {
+        page,
+        search,
+        recipes: [],
+        nextExists: false,
+        prevExists: false,
+      },
+    };
+  }
 };
