@@ -105,8 +105,23 @@ export default function Home(props: HomeProps) {
   );
 }
 
-const ops = readFileSync('graphql/ops/recipe_page.graphql', 'utf8');
-const query = gql(ops);
+const query = gql`
+  query RecipesPage ($page: Int, $keyword: String) {
+    recipes (page: $page, keyword: $keyword) {
+      recipes {
+        id
+        title
+        author {
+          user_name
+        }
+        image_url
+        description
+      }
+      has_next
+      has_prev
+    }
+  }
+`;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const pageRaw = Number(context.query.page);

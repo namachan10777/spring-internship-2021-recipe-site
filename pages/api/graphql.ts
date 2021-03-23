@@ -1,12 +1,43 @@
 import { ApolloServer } from 'apollo-server-micro';
 import { RESTDataSource, RequestOptions } from 'apollo-datasource-rest';
 import { gql } from 'apollo-server-micro';
-import { readFileSync } from 'fs';
 import * as Api from '../../lib/recipe';
 import { RecipesPage, QueryResolvers, Recipe } from '../../lib/generated/graphql';
-const schema = readFileSync('graphql/schema.graphql', 'utf8');
 
-export const typeDefs = gql(schema);
+export const typeDefs = gql`
+  type Author {
+    user_name: String!
+  }
+
+  type Ingredient {
+    name: String!
+    quantity: String!
+  }
+
+  type Recipe {
+    id: ID!
+    title: String!
+    description: String!
+    image_url: String
+    author: Author!
+    published_at: String!
+    steps: [String!]!
+    ingredients: [Ingredient!]!
+    related_recipes: [Int!]!
+  }
+
+  type RecipesPage {
+    recipes: [Recipe!]!
+    has_next: Boolean!
+    has_prev: Boolean!
+  }
+
+  type Query {
+    recipes(page: Int, keyword: String): RecipesPage!
+    recipe(id: ID!): Recipe
+    recipesByIds(ids: [ID!]!): [Recipe!]
+  }
+`;
 
 class CookpadAPI extends RESTDataSource {
   constructor() {

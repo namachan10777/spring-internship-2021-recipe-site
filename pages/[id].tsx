@@ -111,8 +111,24 @@ export default function RecipePageProps(props: RecipePageProps) {
   );
 }
 
-const ops = readFileSync('graphql/ops/recipe.graphql', 'utf8');
-const query = gql(ops);
+const query = gql`
+  query Recipe ($id: ID!) {
+    recipe(id: $id) {
+      id
+      title
+      author {
+        user_name
+      }
+      image_url
+      description
+      ingredients {
+        name
+        quantity
+      }
+      steps
+    }
+  }
+`;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = Number(context.params?.id);
