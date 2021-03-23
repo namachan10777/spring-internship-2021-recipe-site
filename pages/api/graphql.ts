@@ -22,7 +22,7 @@ class CookpadAPI extends RESTDataSource {
     return {
       recipes: res.recipes,
       has_next: res.links.next != null,
-      has_prev: res.links.next != null,
+      has_prev: res.links.prev != null,
     };
   }
 }
