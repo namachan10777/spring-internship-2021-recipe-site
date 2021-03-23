@@ -5,8 +5,11 @@ import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import Search from '../components/search';
-import { Recipe } from '../lib/generated/graphql';
+import { Recipe, RecipeQuery } from '../lib/generated/graphql';
 import * as Bookmark from '../lib/bookmark';
+import { client } from '../lib/graphql_client';
+import { readFileSync } from 'fs';
+import gql from 'graphql-tag';
 import 'tailwindcss/tailwind.css';
 
 type RecipePageProps = Recipe;
@@ -108,33 +111,23 @@ export default function RecipePageProps(props: RecipePageProps) {
   );
 }
 
+const ops = readFileSync('graphql/ops/recipe.graphql', 'utf8');
+const query = gql(ops);
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = Number(context.params?.id);
   if (id) {
-    const api_res = await fetch(`https://internship-recipe-api.ckpd.co/recipes/${id}`, {
-      method: 'GET',
-      headers: new Headers({
-        'X-Api-Key': process.env.COOKPAD_API_KEY as string,
-      }),
-    });
-    const res: Recipe = await api_res.json();
-    if (api_res.status == 200) {
+    const queried = await client.query<RecipeQuery>({ query, variables: { id } });
+    if (queried.errors) {
       return {
-        props: {
-          id,
-          title: res.title,
-          description: res.description,
-          image_url: res.image_url,
-          author: res.author,
-          published_at: res.published_at,
-          steps: res.steps,
-          ingredients: res.ingredients,
-        },
+        notFound: true,
       };
     }
-    return {
-      notFound: true,
-    };
+    if (queried.data.recipe) {
+      return {
+        props: queried.data.recipe,
+      };
+    }
   }
   return {
     notFound: true,

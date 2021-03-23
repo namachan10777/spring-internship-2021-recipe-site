@@ -7,15 +7,15 @@ import * as Bookmark from '../lib/bookmark';
 import 'tailwindcss/tailwind.css';
 import Heading from '../components/heading';
 import Search from '../components/search';
-import ApolloClient from 'apollo-boost';
 import gql from 'graphql-tag';
 import { readFileSync } from 'fs';
 import { RecipesPage, RecipesPageQuery } from '../lib/generated/graphql';
+import { client } from '../lib/graphql_client';
 
 type HomeProps = {
   page: number;
   search: string;
-  queried: RecipesPage | null
+  queried: RecipesPage | null;
 };
 
 export default function Home(props: HomeProps) {
@@ -105,10 +105,6 @@ export default function Home(props: HomeProps) {
   );
 }
 
-const client = new ApolloClient({
-  uri: 'http://localhost:3000/api/graphql',
-});
-
 const ops = readFileSync('graphql/ops/recipe_page.graphql', 'utf8');
 const query = gql(ops);
 
@@ -116,7 +112,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const pageRaw = Number(context.query.page);
   const page = Number.isNaN(pageRaw) ? 1 : Math.max(pageRaw, 1);
   const search = context.query.search === undefined ? '' : context.query.search;
-  const queried = await client.query<RecipesPageQuery>({query, variables: { page }});
+  const queried = await client.query<RecipesPageQuery>({ query, variables: { page } });
   if (queried.errors) {
     return {
       props: {
@@ -125,14 +121,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         queried: null,
       },
     };
-  }
-  else {
+  } else {
     return {
       props: {
         page,
         search,
-        queried: queried.data.recipes
-      }
-    }
+        queried: queried.data.recipes,
+      },
+    };
   }
 };

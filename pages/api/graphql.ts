@@ -3,7 +3,7 @@ import { RESTDataSource, RequestOptions } from 'apollo-datasource-rest';
 import { gql } from 'apollo-server-micro';
 import { readFileSync } from 'fs';
 import * as Api from '../../lib/recipe';
-import { RecipesPage, QueryRecipesArgs, QueryResolvers, Recipe } from '../../lib/generated/graphql';
+import { RecipesPage, QueryResolvers, Recipe } from '../../lib/generated/graphql';
 const schema = readFileSync('graphql/schema.graphql', 'utf8');
 
 export const typeDefs = gql(schema);
@@ -27,6 +27,11 @@ class CookpadAPI extends RESTDataSource {
     };
   }
 
+  async getRecipesByIds(ids: string[]): Promise<Recipe[]> {
+    const res = await this.get('recipes', { id: ids.join(',') });
+    return res.recipes;
+  }
+
   async getRecipe(id: String): Promise<Recipe> {
     const res: Api.Recipe = await this.get(`recipes/${id}`);
     return {
@@ -34,6 +39,7 @@ class CookpadAPI extends RESTDataSource {
       title: res.title,
       description: res.description,
       author: res.author,
+      image_url: res.image_url,
       published_at: res.published_at,
       steps: res.steps,
       ingredients: res.ingredients,
@@ -43,21 +49,16 @@ class CookpadAPI extends RESTDataSource {
 }
 
 const Query: QueryResolvers = {
-  recipes: async (
-    _: any,
-    query,
-    { dataSources }: { dataSources: { api: CookpadAPI } }
-  ): Promise<RecipesPage> => {
+  recipes: async (_: any, query, { dataSources }: { dataSources: { api: CookpadAPI } }): Promise<RecipesPage> => {
     return dataSources.api.getRecipes(query.page ? query.page : 1, query.keyword ? query.keyword : null);
   },
-  recipe: async (
-    _: any,
-    query,
-    { dataSources }: { dataSources: { api: CookpadAPI } }
-  ): Promise<Recipe> => {
+  recipe: async (_: any, query, { dataSources }: { dataSources: { api: CookpadAPI } }): Promise<Recipe> => {
     return dataSources.api.getRecipe(query.id);
+  },
+  recipesByIds: async (_: any, query, { dataSources }: { dataSources: { api: CookpadAPI } }): Promise<Recipe[]> => {
+    return dataSources.api.getRecipesByIds(query.ids);
   }
-}
+};
 
 export const resolvers = {
   Query,

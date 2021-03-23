@@ -28,4 +28,5 @@ type RecipesPage {
 type Query {
   recipes(page: Int, keyword: String): RecipesPage!
   recipe(id: ID!): Recipe
+  recipesByIds(ids: [ID!]!): [Recipe!]
 }
