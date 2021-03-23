@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { Recipe } from '../../../lib/recipe';
 
 export const resolvers = {
@@ -12,7 +11,7 @@ export const resolvers = {
           }),
         });
         const json = await api_res.json();
-        return json.recipes.map((recipe: Recipe) => ({ id: recipe.id, title: recipe.title}));
+        return json.recipes.map((recipe: Recipe) => (recipe));
       } catch (err) {
         throw err;
       }
