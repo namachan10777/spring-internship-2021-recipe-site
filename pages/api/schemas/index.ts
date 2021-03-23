@@ -22,7 +22,13 @@ export const typeDefs = gql`
     related_recipes: [Int!]!
   }
 
+  type RecipePage {
+    recipes: [Recipe!]!
+    has_next: Boolean!
+    has_prev: Boolean!
+  }
+
   type Query {
-    recipes(page: Int): [Recipe!]!
+    recipes(page: Int): RecipePage!
   }
 `;

@@ -12,17 +12,21 @@ export const resolvers = {
         });
         const json = await api_res.json();
         console.log(json);
-        return json.recipes.map((recipe: Recipe) => ({
-          id: recipe.id,
-          title: recipe.title,
-          description: recipe.description,
-          image_url: recipe.image_url,
-          author: recipe.author,
-          pubslished_at: recipe.published_at,
-          steps: recipe.steps,
-          ingredients: recipe.ingredients,
-          related_recipes: recipe.related_recipes,
-        }));
+        return {
+          recipes: json.recipes.map((recipe: Recipe) => ({
+            id: recipe.id,
+            title: recipe.title,
+            description: recipe.description,
+            image_url: recipe.image_url,
+            author: recipe.author,
+            pubslished_at: recipe.published_at,
+            steps: recipe.steps,
+            ingredients: recipe.ingredients,
+            related_recipes: recipe.related_recipes,
+          })),
+          has_next: json.links.next != null,
+          has_prev: json.links.prev != null,
+        };
       } catch (err) {
         throw err;
       }
