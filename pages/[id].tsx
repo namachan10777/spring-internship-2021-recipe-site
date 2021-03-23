@@ -52,10 +52,13 @@ export default function RecipePageProps(props: RecipePageProps) {
         <title>{props.title}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <header>
-        <h2 className="bg-gray-300 p-2 text-xl font-bold">
+      <header className="bg-gray-300 p-2  flex flex-row items-center justify-between">
+        <h2 className="text-xl font-bold">
           <Link href="/">クッキングパッド</Link>
         </h2>
+        <span className="mr-2">
+          <Link href="/myfolder">マイフォルダ</Link>
+        </span>
       </header>
       <div className="my-4 mx-2">
         <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />

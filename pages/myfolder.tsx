@@ -88,8 +88,10 @@ export default function MyFolder(props: MyFolderProps) {
         <title>クッキングパッド</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <header>
-        <h1 className="bg-gray-300 p-2 text-xl font-bold">クッキングパッド</h1>
+      <header className="bg-gray-300 p-2">
+        <h1 className="text-xl font-bold">
+          <Link href="/">クッキングパッド</Link>
+        </h1>
       </header>
       <main>{main_contents}</main>
       <footer className="p-8 flex flex-row justify-between">

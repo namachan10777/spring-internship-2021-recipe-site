@@ -70,8 +70,11 @@ export default function Home(props: HomeProps) {
         <title>クッキングパッド</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <header>
-        <h1 className="bg-gray-300 p-2 text-xl font-bold">クッキングパッド</h1>
+      <header className="bg-gray-300 p-2 flex flex-row items-center justify-between">
+        <h1 className="text-xl font-bold">クッキングパッド</h1>
+        <span className="mr-2">
+          <Link href="/myfolder">マイフォルダ</Link>
+        </span>
       </header>
 
       <div className="my-4 mx-2">

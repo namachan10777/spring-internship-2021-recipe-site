@@ -36,7 +36,9 @@ const Heading: React.FC<HeadingProps> = (props: HeadingProps) => {
               <IoMdHeartEmpty className="text-xl text-black mx-1" />
             </button>
           )}
-          <div><Link href={`/${props.id}`}>{props.title}</Link></div>
+          <div>
+            <Link href={`/${props.id}`}>{props.title}</Link>
+          </div>
         </header>
         <p>{props.description}</p>
       </div>
