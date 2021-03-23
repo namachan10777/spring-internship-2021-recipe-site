@@ -7,13 +7,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const api_res = await fetch(`https://internship-recipe-api.ckpd.co/recipes?id=${req.query.id}`, {
       method: 'GET',
       headers: new Headers({
-        'X-Api-Key':  process.env.COOKPAD_API_KEY as string,
-      })
+        'X-Api-Key': process.env.COOKPAD_API_KEY as string,
+      }),
     });
     const json = await api_res.json();
     return res.status(api_res.status).json(json);
-  }
-  else {
+  } else {
     res.status(403).json([]);
   }
-}
+};
