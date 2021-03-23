@@ -22,6 +22,8 @@ const Heading: React.FC<HeadingProps> = (props: HeadingProps) => {
         <img
           src={props.image_url ? props.image_url : 'dummy'}
           alt={props.title}
+          width={1280}
+          height={720}
           className="w-5/12 flex-shrink-0 my-auto"
         />
       </Link>

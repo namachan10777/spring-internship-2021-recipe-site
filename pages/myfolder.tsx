@@ -69,7 +69,10 @@ export default function MyFolder(props: MyFolderProps) {
         xhr.addEventListener('load', () => {
           setRecipes(JSON.parse(xhr.response).recipes);
         });
-        xhr.open('GET', `https://namachan10777-spring-internship-2021-recipe-site.vercel.app/api?id=${bookmarkIds.ids.join(',')}`);
+        xhr.open(
+          'GET',
+          `https://namachan10777-spring-internship-2021-recipe-site.vercel.app/api?id=${bookmarkIds.ids.join(',')}`
+        );
         setPrevExists(bookmarkIds.prevExists);
         setNextExists(bookmarkIds.nextExists);
         xhr.send();

@@ -76,7 +76,9 @@ export default function RecipePageProps(props: RecipePageProps) {
       <div className="my-4 mx-2">
         <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />
       </div>
-      {props.image_url ? <img className="w-full" src={props.image_url} alt={props.title} /> : null}
+      {props.image_url ? (
+        <img className="w-full" src={props.image_url} width={1280} height={720} alt={props.title} />
+      ) : null}
       <h1 className="text-2xl font-bold p-2">
         {bookmarked ? (
           <button onClick={() => handleUnregister()}>
