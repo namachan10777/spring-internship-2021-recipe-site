@@ -23,7 +23,8 @@
     "lint-fix": "eslint --fix pages/**.tsx lib/**.ts",
     "typecheck": "tsc",
     "fmt": "prettier -w pages/**.tsx pages/**/*.ts .eslintrc.js components/**.tsx",
-    "fmt-check": "prettier --check pages/**.tsx"
+    "fmt-check": "prettier --check pages/**.tsx",
+    "graphql": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "apollo-datasource-rest": "^0.10.0",
@@ -35,6 +36,15 @@
     "react-icons": "^4.2.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "1.21.3",
+    "@graphql-codegen/fragment-matcher": "2.0.1",
+    "@graphql-codegen/introspection": "1.18.1",
+    "@graphql-codegen/typescript": "1.21.1",
+    "@graphql-codegen/typescript-document-nodes": "1.17.10",
+    "@graphql-codegen/typescript-graphql-files-modules": "1.18.1",
+    "@graphql-codegen/typescript-operations": "1.17.15",
+    "@graphql-codegen/typescript-react-apollo": "2.2.3",
+    "@graphql-codegen/typescript-resolvers": "1.19.0",
     "@types/node": "^14.14.35",
     "@types/react": "^17.0.3",
     "@types/react-icons": "^3.0.0",
