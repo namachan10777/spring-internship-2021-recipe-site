@@ -4,17 +4,33 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import 'tailwindcss/tailwind.css';
 import Heading from '../components/heading';
-import { Recipe } from '../lib/generated/graphql';
+import { RecipesByIdsQuery, RecipesByIdsQueryResult } from '../lib/generated/graphql';
 import * as Bookmark from '../lib/bookmark';
+import { client } from '../lib/graphql_client';
+import gql from 'graphql-tag';
 
 type MyFolderProps = {
   page: number;
 };
 
+const query = gql`
+  query RecipesByIds ($ids: [ID!]!) {
+    recipesByIds (ids: $ids) {
+      id
+      title
+      author {
+        user_name
+      }
+      image_url
+      description
+    }
+  }
+`;
+
 export default function MyFolder(props: MyFolderProps) {
   const genQuery = (page: number) => (page === 1 ? '' : `?page=${page}`);
   const { page } = props;
-  const [recipes, setRecipes] = useState<Recipe[] | null>(null);
+  const [recipes, setRecipes] = useState<RecipesByIdsQueryResult[] | null>(null);
   const [prevExists, setPrevExists] = useState(false);
   const [nextExists, setNextExists] = useState(false);
   const [bookmarkMask, setBookmarkMask] = useState<{ [key: string]: boolean }>({});
@@ -65,17 +81,15 @@ export default function MyFolder(props: MyFolderProps) {
         let mask: { [key: string]: boolean } = {};
         bookmarkIds.ids.forEach((id: string) => (mask[id] = true));
         setBookmarkMask(mask);
-        const xhr = new XMLHttpRequest();
-        xhr.addEventListener('load', () => {
-          setRecipes(JSON.parse(xhr.response).recipes);
-        });
-        xhr.open(
-          'GET',
-          `https://namachan10777-spring-internship-2021-recipe-site.vercel.app/api?id=${bookmarkIds.ids.join(',')}`
-        );
-        setPrevExists(bookmarkIds.prevExists);
-        setNextExists(bookmarkIds.nextExists);
-        xhr.send();
+        const queried = await client.query<RecipesByIdsQuery>({query, variables: {ids: bookmarkIds.ids.map(bookmark =>bookmark.toString())}});
+        if (queried.data.recipesByIds) {
+          setRecipes(queried.data.recipesByIds);
+          setPrevExists(bookmarkIds.prevExists);
+          setNextExists(bookmarkIds.nextExists);
+        }
+        else {
+          // TODO
+        }
       } else {
         setRecipes([]);
         setPrevExists(false);
