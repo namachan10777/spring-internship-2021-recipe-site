@@ -106,8 +106,8 @@ export default function Home(props: HomeProps) {
 }
 
 const query = gql`
-  query RecipesPage ($page: Int, $keyword: String) {
-    recipes (page: $page, keyword: $keyword) {
+  query RecipesPage($page: Int, $keyword: String) {
+    recipes(page: $page, keyword: $keyword) {
       recipes {
         id
         title

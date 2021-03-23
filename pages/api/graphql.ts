@@ -52,7 +52,10 @@ class CookpadAPI extends RESTDataSource {
   async getRecipes(page: number, keyword: string | null): Promise<RecipesPage> {
     const res = keyword ? await this.get('search', { page, keyword }) : await this.get('recipes', { page });
     return {
-      recipes: res.recipes,
+      recipes: res.recipes.map((recipe: Recipe) => ({
+        ...recipe,
+        image_url: recipe.image_url ? recipe.image_url.replace('http://', 'https://') : null,
+      })),
       has_next: res.links.next != null,
       has_prev: res.links.prev != null,
     };
@@ -60,17 +63,22 @@ class CookpadAPI extends RESTDataSource {
 
   async getRecipesByIds(ids: string[]): Promise<Recipe[]> {
     const res = await this.get('recipes', { id: ids.join(',') });
-    return res.recipes;
+    return res.recipes.map((recipe: Recipe) => ({
+      ...recipe,
+      image_url: recipe.image_url ? recipe.image_url.replace('http://', 'https://') : null,
+    }));
   }
 
   async getRecipe(id: String): Promise<Recipe> {
     const res: Api.Recipe = await this.get(`recipes/${id}`);
+    const image_url = res.image_url ? res.image_url.replace('http://', 'https://') : null;
+    console.log(image_url);
     return {
       id: res.id.toString(),
       title: res.title,
       description: res.description,
       author: res.author,
-      image_url: res.image_url,
+      image_url: image_url,
       published_at: res.published_at,
       steps: res.steps,
       ingredients: res.ingredients,

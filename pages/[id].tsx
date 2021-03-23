@@ -112,7 +112,7 @@ export default function RecipePageProps(props: RecipePageProps) {
 }
 
 const query = gql`
-  query Recipe ($id: ID!) {
+  query Recipe($id: ID!) {
     recipe(id: $id) {
       id
       title
