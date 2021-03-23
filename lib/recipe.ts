@@ -34,15 +34,3 @@ export type Recipe = {
   // なお、関連レシピの算出アルゴリズムのできが悪いため関連性が低い可能性がある点に注意。
   related_recipes: number[];
 };
-
-export async function getRecipes(): Promise<Recipe[]> {
-  const res = await fetch("http://localhost:3000/api/bff");
-  const recipes = await res.json();
-  return recipes.recipes as Recipe[];
-}
-
-export async function getRecipe(id: number): Promise<Recipe> {
-  const res = await fetch(`http://localhost:3000/api/bff/${id}`);
-  const recipes = await res.json();
-  return recipes.recipe as Recipe;
-}
