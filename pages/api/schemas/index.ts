@@ -16,13 +16,13 @@ export const typeDefs = gql`
     description: String!
     image_url: String
     author: Author!
-    publish_at: String!
+    published_at: String!
     steps: [String!]!
     ingredients: [Ingredient!]!
     related_recipes: [Int!]!
   }
 
   type Query {
-    recipes: [Recipe!]!
+    recipes(page: Int): [Recipe!]!
   }
 `;
