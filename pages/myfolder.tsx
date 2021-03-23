@@ -14,8 +14,8 @@ type MyFolderProps = {
 };
 
 const query = gql`
-  query RecipesByIds ($ids: [ID!]!) {
-    recipesByIds (ids: $ids) {
+  query RecipesByIds($ids: [ID!]!) {
+    recipesByIds(ids: $ids) {
       id
       title
       author {
@@ -81,13 +81,15 @@ export default function MyFolder(props: MyFolderProps) {
         let mask: { [key: string]: boolean } = {};
         bookmarkIds.ids.forEach((id: string) => (mask[id] = true));
         setBookmarkMask(mask);
-        const queried = await client.query<RecipesByIdsQuery>({query, variables: {ids: bookmarkIds.ids.map(bookmark =>bookmark.toString())}});
+        const queried = await client.query<RecipesByIdsQuery>({
+          query,
+          variables: { ids: bookmarkIds.ids.map((bookmark) => bookmark.toString()) },
+        });
         if (queried.data.recipesByIds) {
           setRecipes(queried.data.recipesByIds);
           setPrevExists(bookmarkIds.prevExists);
           setNextExists(bookmarkIds.nextExists);
-        }
-        else {
+        } else {
           // TODO
         }
       } else {

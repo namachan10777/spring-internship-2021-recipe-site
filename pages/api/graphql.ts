@@ -19,7 +19,7 @@ class CookpadAPI extends RESTDataSource {
   }
 
   async getRecipes(page: number, keyword: string | null): Promise<RecipesPage> {
-    const res = keyword ? await this.get('recipes', { page, keyword }) : await this.get('recipes', { page });
+    const res = keyword ? await this.get('search', { page, keyword }) : await this.get('recipes', { page });
     return {
       recipes: res.recipes,
       has_next: res.links.next != null,
@@ -57,7 +57,7 @@ const Query: QueryResolvers = {
   },
   recipesByIds: async (_: any, query, { dataSources }: { dataSources: { api: CookpadAPI } }): Promise<Recipe[]> => {
     return dataSources.api.getRecipesByIds(query.ids);
-  }
+  },
 };
 
 export const resolvers = {

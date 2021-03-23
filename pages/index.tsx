@@ -112,7 +112,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const pageRaw = Number(context.query.page);
   const page = Number.isNaN(pageRaw) ? 1 : Math.max(pageRaw, 1);
   const search = context.query.search === undefined ? '' : context.query.search;
-  const queried = await client.query<RecipesPageQuery>({ query, variables: { page } });
+  const queried = await client.query<RecipesPageQuery>({ query, variables: { page, keyword: search } });
   if (queried.errors) {
     return {
       props: {
