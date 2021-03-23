@@ -34,3 +34,14 @@ export type Recipe = {
   // なお、関連レシピの算出アルゴリズムのできが悪いため関連性が低い可能性がある点に注意。
   related_recipes: number[];
 };
+
+export type Response = {
+  // レシピ一覧
+  recipes: Recipe[];
+
+  // ページネーション可能な場合の次、前のページのリンク
+  links: {
+    next?: string;
+    prev?: string;
+  };
+};
