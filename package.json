@@ -26,6 +26,7 @@
     "fmt-check": "prettier --check pages/**.tsx"
   },
   "dependencies": {
+    "apollo-datasource-rest": "^0.10.0",
     "apollo-server-micro": "^2.21.2",
     "axios": "^0.21.1",
     "next": "10.0.9",
