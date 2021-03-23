@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
+import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import Search from '../components/search';
 import { Recipe } from '../lib/recipe';
+import * as Bookmark from '../lib/bookmark';
 import 'tailwindcss/tailwind.css';
 
 type RecipePageProps = {
+  id: number;
   title: string;
   description: string;
   image_url: string | null;
@@ -31,6 +34,18 @@ export default function RecipePageProps(props: RecipePageProps) {
       router.push(`/?search=${searchWord}`);
     }
   };
+  const [bookmarked, setBookmared] = useState(false);
+  useEffect(() => {
+    setBookmared(Bookmark.include(props.id));
+  }, []);
+  const handleUnregister = () => {
+    Bookmark.unregister(props.id);
+    setBookmared(false);
+  };
+  const handleRegister = () => {
+    Bookmark.register(props.id);
+    setBookmared(true);
+  };
   return (
     <div>
       <Head>
@@ -47,6 +62,16 @@ export default function RecipePageProps(props: RecipePageProps) {
       </div>
       {props.image_url ? <img className="w-full" src={props.image_url} alt={props.title} /> : null}
       <h1 className="text-2xl font-bold p-2">{props.title}</h1>
+      {bookmarked ? (
+        <button onClick={() => handleUnregister()}>
+          <IoMdHeart className="text-red-700" />
+        </button>
+      ) : (
+        <button onClick={() => handleRegister()}>
+          <IoMdHeartEmpty />
+        </button>
+      )}
+
       <div className="flex flex-row justify-between m-2">
         <span className="block">{props.author.user_name}</span>
         <span className="block">{props.published_at}</span>
@@ -90,6 +115,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (api_res.status == 200) {
       return {
         props: {
+          id,
           title: res.title,
           description: res.description,
           image_url: res.image_url,

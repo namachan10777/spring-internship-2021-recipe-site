@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import { Recipe } from '../lib/recipe';
+import * as Bookmark from '../lib/bookmark';
 import 'tailwindcss/tailwind.css';
 import Heading from '../components/heading';
 import Search from '../components/search';
@@ -30,10 +31,22 @@ export default function Home(props: HomeProps) {
       router.push(`/?search=${searchWord}`);
     }
   };
+  const [bookmarkMask, setBookmarkMask] = useState<{ [key: number]: boolean }>({});
+  const unregisterBookmark = (id: number) => {
+    Bookmark.unregister(id);
+    setBookmarkMask({ ...bookmarkMask, [id]: false });
+  };
+  const registerBookmark = (id: number) => {
+    Bookmark.register(id);
+    setBookmarkMask({ ...bookmarkMask, [id]: true });
+  };
   const main_contents =
     recipes.length > 0 ? (
       recipes.map((recipe) => (
         <Heading
+          registerBookmark={() => registerBookmark(recipe.id)}
+          unregisterBookmark={() => unregisterBookmark(recipe.id)}
+          registered={bookmarkMask[recipe.id] ? bookmarkMask[recipe.id] : false}
           id={recipe.id}
           key={recipe.id}
           title={recipe.title}
@@ -44,6 +57,13 @@ export default function Home(props: HomeProps) {
     ) : (
       <span className="text-2xl">レシピが見つかりませんでした</span>
     );
+  useEffect(() => {
+    let mask: { [key: number]: boolean } = {};
+    recipes.forEach((recipe) => {
+      mask[recipe.id] = Bookmark.include(recipe.id);
+    });
+    setBookmarkMask(mask);
+  }, []);
   return (
     <div>
       <Head>

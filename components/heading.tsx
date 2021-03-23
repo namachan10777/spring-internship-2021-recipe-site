@@ -1,6 +1,7 @@
 import * as React from 'react';
 import 'tailwindcss/tailwind.css';
 import Link from 'next/link';
+import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import 'tailwindcss/tailwind.css';
 
 type HeadingProps = {
@@ -8,6 +9,9 @@ type HeadingProps = {
   title: string;
   description: string;
   image_url: string | null;
+  registerBookmark: () => void;
+  unregisterBookmark: () => void;
+  registered: boolean;
 };
 
 const Heading: React.FC<HeadingProps> = (props: HeadingProps) => {
@@ -22,6 +26,17 @@ const Heading: React.FC<HeadingProps> = (props: HeadingProps) => {
         />
       </Link>
       <div className="ml-2">
+        <button
+          onClick={() => {
+            if (props.registered) {
+              props.unregisterBookmark();
+            } else {
+              props.registerBookmark();
+            }
+          }}
+        >
+          {props.registered ? <IoMdHeart className="text-red-700" /> : <IoMdHeartEmpty className="text-black" />}
+        </button>
         <header className="text-lg mb-1 font-bold">
           <Link href={`/${props.id}`}>{props.title}</Link>
         </header>
