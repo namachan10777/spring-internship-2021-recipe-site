@@ -17,8 +17,8 @@ class CookpadAPI extends RESTDataSource {
     req.headers.set('X-Api-Key', process.env.COOKPAD_API_KEY as string);
   }
 
-  async getRecipes(page: number): Promise<RecipePage> {
-    const res = await this.get('recipes', { page });
+  async getRecipes(page: number, keyword: string | null): Promise<RecipePage> {
+    const res = keyword ? await this.get('recipes', { page, keyword }) : await this.get('recipes', { page });
     return {
       recipes: res.recipes,
       has_next: res.links.next != null,
@@ -34,7 +34,7 @@ export const resolvers = {
       query: QueryRecipesArgs,
       { dataSources }: { dataSources: { api: CookpadAPI } }
     ): Promise<RecipePage> => {
-      return dataSources.api.getRecipes(query.page ? query.page : 1);
+      return dataSources.api.getRecipes(query.page ? query.page : 1, query.keyword ? query.keyword : null);
     },
   },
 };

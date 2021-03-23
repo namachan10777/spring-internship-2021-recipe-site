@@ -26,5 +26,5 @@ type RecipePage {
 }
 
 type Query {
-  recipes(page: Int): RecipePage!
+  recipes(page: Int, keyword: String): RecipePage!
 }
