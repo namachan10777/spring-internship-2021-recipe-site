@@ -1,6 +1,6 @@
 import ApolloClient from 'apollo-boost';
 
 export const client = new ApolloClient({
-  uri: 'http://localhost:3000/api/graphql',
+  uri: 'https://namachan10777-spring-internship-2021-recipe-site.vercel.app/api/graphql',
 });
 
