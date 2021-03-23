@@ -59,7 +59,7 @@ export default function RecipePageProps(props: RecipePageProps) {
         <meta property="og:article:modified_time" content={props.published_at} />
         <meta property="og:article:section" content="Cooking" />
         <meta property="og:image" content={props.image_url ? props.image_url : ''} />
-        <meta name="twitter:card" content="summary_larget_image" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image:src" content={props.image_url ? props.image_url : ''} />
         <meta name="twitter:description" content={props.description} />
         <meta name="twitter:title" content={props.title} />
