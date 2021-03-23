@@ -19,12 +19,13 @@ type Recipe {
   related_recipes: [Int!]!
 }
 
-type RecipePage {
+type RecipesPage {
   recipes: [Recipe!]!
   has_next: Boolean!
   has_prev: Boolean!
 }
 
 type Query {
-  recipes(page: Int, keyword: String): RecipePage!
+  recipes(page: Int, keyword: String): RecipesPage!
+  recipe(id: ID!): Recipe
 }

@@ -3,23 +3,24 @@ import Link from 'next/link';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
-import { Recipe } from '../lib/recipe';
 import * as Bookmark from '../lib/bookmark';
 import 'tailwindcss/tailwind.css';
 import Heading from '../components/heading';
 import Search from '../components/search';
+import ApolloClient from 'apollo-boost';
+import gql from 'graphql-tag';
+import { readFileSync } from 'fs';
+import { RecipesPage, RecipesPageQuery } from '../lib/generated/graphql';
 
 type HomeProps = {
-  recipes: Recipe[];
   page: number;
   search: string;
-  nextExists: boolean;
-  prevExists: boolean;
+  queried: RecipesPage | null
 };
 
 export default function Home(props: HomeProps) {
   const router = useRouter();
-  const { search, page, recipes, nextExists, prevExists } = props;
+  const { search, page, queried } = props;
   const genPageQuery = (p: number) => (p === 0 ? '' : `page=${p}`);
   const genSearchQuery = (s: string) => (s === '' ? '' : `search=${s}`);
   const genQuery = (p: number, s: string): string => {
@@ -31,15 +32,18 @@ export default function Home(props: HomeProps) {
       router.push(`/?search=${searchWord}`);
     }
   };
-  const [bookmarkMask, setBookmarkMask] = useState<{ [key: number]: boolean }>({});
-  const unregisterBookmark = (id: number) => {
+  const [bookmarkMask, setBookmarkMask] = useState<{ [key: string]: boolean }>({});
+  const unregisterBookmark = (id: string) => {
     Bookmark.unregister(id);
     setBookmarkMask({ ...bookmarkMask, [id]: false });
   };
-  const registerBookmark = (id: number) => {
+  const registerBookmark = (id: string) => {
     Bookmark.register(id);
     setBookmarkMask({ ...bookmarkMask, [id]: true });
   };
+  const recipes = queried ? queried.recipes : [];
+  const has_prev = queried ? queried.has_prev : false;
+  const has_next = queried ? queried.has_next : false;
   const main_contents =
     recipes.length > 0 ? (
       recipes.map((recipe) => (
@@ -51,14 +55,14 @@ export default function Home(props: HomeProps) {
           key={recipe.id}
           title={recipe.title}
           description={recipe.description}
-          image_url={recipe.image_url}
+          image_url={recipe.image_url ? recipe.image_url : null}
         />
       ))
     ) : (
       <span className="text-2xl">レシピが見つかりませんでした</span>
     );
   useEffect(() => {
-    let mask: { [key: number]: boolean } = {};
+    let mask: { [key: string]: boolean } = {};
     recipes.forEach((recipe) => {
       mask[recipe.id] = Bookmark.include(recipe.id);
     });
@@ -82,14 +86,14 @@ export default function Home(props: HomeProps) {
       </div>
       <main>{main_contents}</main>
       <footer className="p-8 flex flex-row justify-between">
-        {prevExists ? (
+        {has_prev ? (
           <span>
             <Link href={`/${genQuery(page - 1, search)}`}>前のページ</Link>
           </span>
         ) : (
           <span />
         )}
-        {nextExists ? (
+        {has_next ? (
           <span>
             <Link href={`/${genQuery(page + 1, search)}`}>次のページ</Link>
           </span>
@@ -101,39 +105,34 @@ export default function Home(props: HomeProps) {
   );
 }
 
+const client = new ApolloClient({
+  uri: 'http://localhost:3000/api/graphql',
+});
+
+const ops = readFileSync('graphql/ops/recipe_page.graphql', 'utf8');
+const query = gql(ops);
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const pageRaw = Number(context.query.page);
   const page = Number.isNaN(pageRaw) ? 1 : Math.max(pageRaw, 1);
   const search = context.query.search === undefined ? '' : context.query.search;
-  const endPointAndQuery =
-    search === '' || typeof search !== 'string'
-      ? `recipes?page=${page}`
-      : `search?page=${page}&keyword=${encodeURI(search)}`;
-  const api_res = await fetch(`https://internship-recipe-api.ckpd.co/${endPointAndQuery}`, {
-    method: 'GET',
-    headers: new Headers({
-      'X-Api-Key': process.env.COOKPAD_API_KEY as string,
-    }),
-  });
-  if (api_res.status == 200) {
-    const res = await api_res.json();
+  const queried = await client.query<RecipesPageQuery>({query, variables: { page }});
+  if (queried.errors) {
     return {
       props: {
         page,
         search,
-        recipes: res.recipes,
-        nextExists: res.links.next !== undefined,
-        prevExists: res.links.prev !== undefined,
+        queried: null,
       },
     };
   }
-  return {
-    props: {
-      page,
-      search,
-      recipes: [],
-      nextExists: false,
-      prevExists: false,
-    },
-  };
+  else {
+    return {
+      props: {
+        page,
+        search,
+        queried: queried.data.recipes
+      }
+    }
+  }
 };

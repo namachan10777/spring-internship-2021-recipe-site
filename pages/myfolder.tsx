@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import 'tailwindcss/tailwind.css';
 import Heading from '../components/heading';
-import { Recipe } from '../lib/recipe';
+import { Recipe } from '../lib/generated/graphql';
 import * as Bookmark from '../lib/bookmark';
 
 type MyFolderProps = {
@@ -17,13 +17,13 @@ export default function MyFolder(props: MyFolderProps) {
   const [recipes, setRecipes] = useState<Recipe[] | null>(null);
   const [prevExists, setPrevExists] = useState(false);
   const [nextExists, setNextExists] = useState(false);
-  const [bookmarkMask, setBookmarkMask] = useState<{ [key: number]: boolean }>({});
-  const handleUnregister = (id: number) => {
+  const [bookmarkMask, setBookmarkMask] = useState<{ [key: string]: boolean }>({});
+  const handleUnregister = (id: string) => {
     Bookmark.unregister(id);
     setBookmarkMask({ ...bookmarkMask, [id]: false });
     console.log(bookmarkMask);
   };
-  const handleUndo = (id: number) => {
+  const handleUndo = (id: string) => {
     Bookmark.register(id);
     setBookmarkMask({ ...bookmarkMask, [id]: true });
     console.log(bookmarkMask);
@@ -41,7 +41,7 @@ export default function MyFolder(props: MyFolderProps) {
             registerBookmark={() => handleUndo(recipe.id)}
             unregisterBookmark={() => handleUnregister(recipe.id)}
             description={recipe.description}
-            image_url={recipe.image_url}
+            image_url={recipe.image_url ? recipe.image_url : null}
           />
         ) : (
           <div key={recipe.id} className="text-xl">
@@ -62,8 +62,8 @@ export default function MyFolder(props: MyFolderProps) {
     (async () => {
       const bookmarkIds = Bookmark.bookmarks(props.page);
       if (bookmarkIds && bookmarkIds.ids.length > 0) {
-        let mask: { [key: number]: boolean } = {};
-        bookmarkIds.ids.forEach((id: number) => (mask[id] = true));
+        let mask: { [key: string]: boolean } = {};
+        bookmarkIds.ids.forEach((id: string) => (mask[id] = true));
         setBookmarkMask(mask);
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('load', () => {

@@ -16,12 +16,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "graphql-codegen --config codegen.yml && next dev",
+    "build": "graphql-codegen --config codegen.yml && next build",
     "start": "next start",
     "lint": "eslint pages/**.tsx",
     "lint-fix": "eslint --fix pages/**.tsx lib/**.ts",
-    "typecheck": "tsc",
+    "typecheck": "graphql-codegen --config codegen.yml && tsc",
     "fmt": "prettier -w pages/**.tsx pages/**/*.ts .eslintrc.js components/**.tsx",
     "fmt-check": "prettier --check pages/**.tsx",
     "graphql": "graphql-codegen --config codegen.yml"

@@ -1,6 +1,7 @@
-query RecipePageQuery ($page: Int) {
-  recipes (page: $page) {
+query RecipesPage ($page: Int, $keyword: String) {
+  recipes (page: $page, keyword: $keyword) {
     recipes {
+      id
       title
       author {
         user_name

@@ -1,5 +1,5 @@
 type pagenatedBookmarks = {
-  ids: number[];
+  ids: string[];
   nextExists: boolean;
   prevExists: boolean;
 }
@@ -9,7 +9,7 @@ const COLUMN_MAX = 10;
 export function bookmarks(page: number):pagenatedBookmarks | null {
   const rawString = localStorage.getItem('bookmark');
   if (rawString) {
-    const bookmarks: number[] = JSON.parse(rawString);
+    const bookmarks: string[] = JSON.parse(rawString);
     const pageCount = Math.ceil(bookmarks.length / COLUMN_MAX);
     if (page < 1 || page > pageCount) {
       return null;
@@ -29,10 +29,10 @@ export function bookmarks(page: number):pagenatedBookmarks | null {
   }
 }
 
-export function include(id: number):boolean {
+export function include(id: string):boolean {
   const rawString = localStorage.getItem('bookmark');
   if (rawString) {
-    const bookmarks: number[] = JSON.parse(rawString);
+    const bookmarks: string[] = JSON.parse(rawString);
     return bookmarks.includes(id);
   }
   else {
@@ -40,10 +40,10 @@ export function include(id: number):boolean {
   }
 }
 
-export function register(id: number) {
+export function register(id: string) {
   const rawString = localStorage.getItem('bookmark');
   if (rawString) {
-    const bookmarks: number[] = JSON.parse(rawString);
+    const bookmarks: string[] = JSON.parse(rawString);
     bookmarks.push(id);
     localStorage.setItem('bookmark', JSON.stringify(bookmarks));
   }
@@ -52,10 +52,10 @@ export function register(id: number) {
   }
 }
 
-export function unregister(id: number) {
+export function unregister(id: string) {
   const rawString = localStorage.getItem('bookmark');
   if (rawString) {
-    const bookmarks: number[] = JSON.parse(rawString);
+    const bookmarks: string[] = JSON.parse(rawString);
     localStorage.setItem('bookmark', JSON.stringify(bookmarks.filter(storedId => storedId != id)));
   }
 }

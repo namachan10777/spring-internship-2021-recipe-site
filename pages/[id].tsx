@@ -5,25 +5,11 @@ import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import Search from '../components/search';
-import { Recipe } from '../lib/recipe';
+import { Recipe } from '../lib/generated/graphql';
 import * as Bookmark from '../lib/bookmark';
 import 'tailwindcss/tailwind.css';
 
-type RecipePageProps = {
-  id: number;
-  title: string;
-  description: string;
-  image_url: string | null;
-  author: {
-    user_name: string;
-  };
-  published_at: string;
-  steps: string[];
-  ingredients: {
-    name: string;
-    quantity: string;
-  }[];
-};
+type RecipePageProps = Recipe;
 
 export default function RecipePageProps(props: RecipePageProps) {
   const router = useRouter();
