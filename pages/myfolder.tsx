@@ -44,8 +44,11 @@ export default function MyFolder(props: MyFolderProps) {
             image_url={recipe.image_url}
           />
         ) : (
-          <div key={recipe.id}>
-            削除しました<button onClick={() => handleUndo(recipe.id)}>戻す</button>
+          <div key={recipe.id} className="text-xl">
+            削除しました
+            <button className="ml-2 text-indigo-800 font-bold" onClick={() => handleUndo(recipe.id)}>
+              戻す
+            </button>
           </div>
         )
       )

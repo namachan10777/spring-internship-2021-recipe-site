@@ -25,20 +25,18 @@ const Heading: React.FC<HeadingProps> = (props: HeadingProps) => {
           className="w-5/12 flex-shrink-0 my-auto"
         />
       </Link>
-      <div className="ml-2">
-        <button
-          onClick={() => {
-            if (props.registered) {
-              props.unregisterBookmark();
-            } else {
-              props.registerBookmark();
-            }
-          }}
-        >
-          {props.registered ? <IoMdHeart className="text-red-700" /> : <IoMdHeartEmpty className="text-black" />}
-        </button>
-        <header className="text-lg mb-1 font-bold">
-          <Link href={`/${props.id}`}>{props.title}</Link>
+      <div>
+        <header className="text-lg mb-1 font-bold flex flex-row">
+          {props.registered ? (
+            <button onClick={() => props.unregisterBookmark()}>
+              <IoMdHeart className="text-xl text-red-700 mx-1" />
+            </button>
+          ) : (
+            <button onClick={() => props.registerBookmark()}>
+              <IoMdHeartEmpty className="text-xl text-black mx-1" />
+            </button>
+          )}
+          <div><Link href={`/${props.id}`}>{props.title}</Link></div>
         </header>
         <p>{props.description}</p>
       </div>

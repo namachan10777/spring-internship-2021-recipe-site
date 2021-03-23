@@ -61,16 +61,18 @@ export default function RecipePageProps(props: RecipePageProps) {
         <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />
       </div>
       {props.image_url ? <img className="w-full" src={props.image_url} alt={props.title} /> : null}
-      <h1 className="text-2xl font-bold p-2">{props.title}</h1>
-      {bookmarked ? (
-        <button onClick={() => handleUnregister()}>
-          <IoMdHeart className="text-red-700" />
-        </button>
-      ) : (
-        <button onClick={() => handleRegister()}>
-          <IoMdHeartEmpty />
-        </button>
-      )}
+      <h1 className="text-2xl font-bold p-2">
+        {bookmarked ? (
+          <button onClick={() => handleUnregister()}>
+            <IoMdHeart className="text-red-700" />
+          </button>
+        ) : (
+          <button onClick={() => handleRegister()}>
+            <IoMdHeartEmpty />
+          </button>
+        )}
+        <span className="ml-2">{props.title}</span>
+      </h1>
 
       <div className="flex flex-row justify-between m-2">
         <span className="block">{props.author.user_name}</span>
