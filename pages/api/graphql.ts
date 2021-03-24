@@ -27,6 +27,9 @@ class CookpadAPI extends RESTDataSource {
   }
 
   async getRecipesByIds(ids: string[]): Promise<Recipe[]> {
+    if (ids.length == 0) {
+      return [];
+    }
     const res = await this.get('recipes', { id: ids.join(',') });
     return res.recipes.map((recipe: Recipe) => ({
       ...recipe,
