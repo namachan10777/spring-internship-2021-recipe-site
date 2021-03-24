@@ -91,11 +91,6 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
         autoSwipeLeft();
       }
     }
-    setTimeout(() => {
-      setAnimateState({
-        state: 'stop',
-      });
-    }, 200);
   };
   const handleMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (animateState.state == 'moving') {
