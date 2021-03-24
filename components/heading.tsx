@@ -1,6 +1,7 @@
 import * as React from 'react';
 import 'tailwindcss/tailwind.css';
 import Link from 'next/link';
+import Image from 'next/image';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import 'tailwindcss/tailwind.css';
 
@@ -19,7 +20,7 @@ const Heading: React.FC<HeadingProps> = (props: HeadingProps) => {
   return (
     <section className="flex flex-row my-1 border-b-2 p-2">
       <Link href={`/${props.id}`}>
-        <img
+        <Image
           src={props.image_url ? props.image_url : 'dummy'}
           alt={props.title}
           width={1280}
