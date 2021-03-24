@@ -21,7 +21,12 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   const [posterIdx, setPosterIdx] = useState(0);
   const rootStyle: CSSProperties = {
     position: 'relative',
-    transform: info.state == 'moving' ? `translate3d(${info.currentX - info.startX}px, 0, 0)` : 'initial',
+    transform:
+      info.state == 'moving'
+        ? `translate3d(${
+            (info.currentX - info.startX) / (posterIdx == 0 || posterIdx == props.children.length - 1 ? 5 : 1)
+          }px, 0, 0)`
+        : 'initial',
     transition: info.state == 'moving' ? 'initial' : 'translate 200ms ease 0s',
   };
   const containerStyle: CSSProperties = {
