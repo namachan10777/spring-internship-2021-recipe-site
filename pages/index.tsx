@@ -5,11 +5,13 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import * as Bookmark from '../lib/bookmark';
 import 'tailwindcss/tailwind.css';
+import { MdMenu } from 'react-icons/md';
 import Heading from '../components/heading';
 import Search from '../components/search';
 import { RecipesPage, RecipesPageQuery } from '../lib/generated/graphql';
 import { client } from '../lib/graphql_client';
 import query from '../graphql/ops/recipes_page';
+import Drawer from '../components/drawer';
 
 type HomeProps = {
   page: number;
@@ -60,6 +62,7 @@ export default function Home(props: HomeProps) {
     ) : (
       <span className="text-2xl">レシピが見つかりませんでした</span>
     );
+  const [drawerOpen, setDrawerOpen] = useState(false);
   useEffect(() => {
     let mask: { [key: string]: boolean } = {};
     recipes.forEach((recipe) => {
@@ -73,33 +76,37 @@ export default function Home(props: HomeProps) {
         <title>クッキングパッド</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <header className="bg-gray-300 p-2 flex flex-row items-center justify-between">
-        <h1 className="text-xl font-bold">クッキングパッド</h1>
-        <span className="mr-2">
-          <Link href="/myfolder">マイフォルダ</Link>
-        </span>
-      </header>
-
-      <div className="my-4 mx-2">
-        <Search keyword={search} onSubmit={(searchWord) => handleSearch(searchWord)} />
-      </div>
-      <main>{main_contents}</main>
-      <footer className="p-8 flex flex-row justify-between">
-        {has_prev ? (
-          <span>
-            <Link href={`/${genQuery(page - 1, search)}`}>前のページ</Link>
+      <Drawer drawerElements={[]} width="300px" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <header className="bg-gray-300 p-2 flex flex-row items-center justify-between">
+          <button onClick={() => setDrawerOpen(!drawerOpen)}>
+            <MdMenu />
+          </button>
+          <h1 className="text-xl font-bold">クッキングパッド</h1>
+          <span className="mr-2">
+            <Link href="/myfolder">マイフォルダ</Link>
           </span>
-        ) : (
-          <span />
-        )}
-        {has_next ? (
-          <span>
-            <Link href={`/${genQuery(page + 1, search)}`}>次のページ</Link>
-          </span>
-        ) : (
-          <span />
-        )}
-      </footer>
+        </header>
+        <div className="my-4 mx-2">
+          <Search keyword={search} onSubmit={(searchWord) => handleSearch(searchWord)} />
+        </div>
+        <main>{main_contents}</main>
+        <footer className="p-8 flex flex-row justify-between">
+          {has_prev ? (
+            <span>
+              <Link href={`/${genQuery(page - 1, search)}`}>前のページ</Link>
+            </span>
+          ) : (
+            <span />
+          )}
+          {has_next ? (
+            <span>
+              <Link href={`/${genQuery(page + 1, search)}`}>次のページ</Link>
+            </span>
+          ) : (
+            <span />
+          )}
+        </footer>
+      </Drawer>
     </div>
   );
 }
