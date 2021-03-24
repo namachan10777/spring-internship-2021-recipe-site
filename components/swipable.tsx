@@ -16,6 +16,7 @@ type AnimateState =
       state: 'stop';
     }
   | { state: 'scroll' }
+  | { state: 'cancel'; timeoutId: NodeJS.Timeout }
   | { state: 'right'; timeoutId: NodeJS.Timeout }
   | { state: 'left'; timeoutId: NodeJS.Timeout }
   | { state: 'move_start'; startX: number; startY: number };
@@ -60,8 +61,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
         boxShadow: '-10px 0px 10px rgba(0, 0, 0, 0.4)',
         transform: 'translate(100vw)',
       };
-    }
-    else if (id == posterIdx) {
+    } else if (id == posterIdx) {
       return {};
     } else if (id == posterIdx + 1) {
       return {
@@ -101,6 +101,8 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
         autoSwipeRight();
       } else if (moved > document.body.clientWidth / 2 && posterIdx > 0) {
         autoSwipeLeft();
+      } else {
+        cancelSwipe();
       }
     }
   };
@@ -142,6 +144,14 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       state: 'left',
       timeoutId: setTimeout(() => {
         setPosterIdx(posterIdx - 1);
+        setAnimateState({ state: 'stop' });
+      }, swipeAnimateDuration),
+    });
+  };
+  const cancelSwipe = () => {
+    setAnimateState({
+      state: 'cancel',
+      timeoutId: setTimeout(() => {
         setAnimateState({ state: 'stop' });
       }, swipeAnimateDuration),
     });
