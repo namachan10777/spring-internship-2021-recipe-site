@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
-import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import Search from '../components/search';
 import { Recipe, RecipeQuery } from '../lib/generated/graphql';
 import * as Bookmark from '../lib/bookmark';
 import { client } from '../lib/graphql_client';
 import query from '../graphql/ops/recipe';
 import 'tailwindcss/tailwind.css';
+import RecipeView from '../components/recipe_view';
 
 type RecipePageProps = Recipe;
 
@@ -65,50 +64,12 @@ export default function RecipePageProps(props: RecipePageProps) {
       <div className="my-4 mx-2">
         <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />
       </div>
-      {props.image_url ? (
-        <div className="w-full">
-          <Image src={props.image_url} width={1280} height={720} alt={props.title} layout="responsive" />
-        </div>
-      ) : null}
-      <h1 className="text-2xl font-bold p-2">
-        {bookmarked ? (
-          <button onClick={() => handleUnregister()}>
-            <IoMdHeart className="text-red-700" />
-          </button>
-        ) : (
-          <button onClick={() => handleRegister()}>
-            <IoMdHeartEmpty />
-          </button>
-        )}
-        <span className="ml-2">{props.title}</span>
-      </h1>
-
-      <div className="flex flex-row justify-between m-2">
-        <span className="block">{props.author.user_name}</span>
-        <span className="block">{props.published_at}</span>
-      </div>
-      <p className="p-4">{props.description}</p>
-      <section>
-        <header className="px-4 bg-gray-300 text-lg font-bold">材料</header>
-        <ul role="list">
-          {props.ingredients.map((ingredient, i) => (
-            <li key={i} className="border-b-2 flex justify-between p-2">
-              <div>{ingredient.name}</div>
-              <div>{ingredient.quantity}</div>
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <header className="px-4 bg-gray-300 text-lg font-bold">手順</header>
-        <ol className="list-inside list-decimal">
-          {props.steps.map((step, i) => (
-            <li key={i} className="border-b-2 p-2 font-bold">
-              <span className="ml-1 font-normal">{step}</span>
-            </li>
-          ))}
-        </ol>
-      </section>
+      <RecipeView
+        bookmarked={bookmarked}
+        bookmark={(_) => handleRegister()}
+        unbookmark={(_) => handleUnregister()}
+        recipe={props}
+      />
     </div>
   );
 }
