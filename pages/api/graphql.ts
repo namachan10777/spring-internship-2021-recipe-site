@@ -40,7 +40,6 @@ class CookpadAPI extends RESTDataSource {
   async getRecipe(id: String): Promise<Recipe> {
     const res: Api.Recipe = await this.get(`recipes/${id}`);
     const image_url = res.image_url ? res.image_url.replace('http://', 'https://') : null;
-    console.log(image_url);
     return {
       id: res.id.toString(),
       title: res.title,
