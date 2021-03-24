@@ -24,7 +24,8 @@ export default function RecipePageProps(props: RecipePageProps) {
     if (searchWord == '') {
       router.push('/');
     } else {
-      router.push(`/?search=${searchWord}`); }
+      router.push(`/?search=${searchWord}`);
+    }
   };
   const [bookmarked, setBookmared] = useState(false);
   useEffect(() => {

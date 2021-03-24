@@ -12,15 +12,17 @@ type SwipeInfo =
     }
   | {
       state: 'stop';
-    };
+    }
+  | { state: 'scroll' }
+  | { state: 'move_start'; startX: number; startY: number };
 
 const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   const [info, setInfo] = useState<SwipeInfo>({ state: 'stop' });
   const [posterIdx, setPosterIdx] = useState(0);
   const rootStyle: CSSProperties = {
     position: 'relative',
-    transform: info.state == 'stop' ? 'initial' : `translate3d(${info.currentX - info.startX}px, 0, 0)`,
-    transition: info.state == 'stop' ? 'translate 200ms ease 0s' : 'initial',
+    transform: info.state == 'moving' ? `translate3d(${info.currentX - info.startX}px, 0, 0)` : 'initial',
+    transition: info.state == 'moving' ? 'initial' : 'translate 200ms ease 0s',
   };
   const containerStyle: CSSProperties = {
     position: 'sticky',
@@ -52,13 +54,12 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   };
   const handleStart = (e: React.TouchEvent<HTMLDivElement>) => {
     setInfo({
-      state: 'moving',
+      state: 'move_start',
       startX: e.touches[0].clientX,
-      currentX: e.touches[0].clientX,
+      startY: e.touches[0].clientY,
     });
   };
   const handleEnd = (_: React.TouchEvent<HTMLDivElement>) => {
-    console.log(props.children);
     if (info.state == 'moving' && document) {
       const moved = info.currentX - info.startX;
       if (moved < -document.body.clientWidth / 2 && posterIdx < props.children.length - 1) {
@@ -78,6 +79,21 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
         startX: info.startX,
         currentX: e.touches[0].clientX,
       });
+    } else if (info.state == 'move_start') {
+      const touch = e.touches[0];
+      const move_direction = Math.abs((info.startX - touch.clientX) / (info.startY - touch.clientY));
+      // magic number
+      if (move_direction > 1.0) {
+        setInfo({
+          state: 'moving',
+          startX: info.startX,
+          currentX: touch.clientX,
+        });
+      } else {
+        setInfo({
+          state: 'scroll',
+        });
+      }
     }
   };
   return (
