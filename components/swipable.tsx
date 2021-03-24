@@ -1,7 +1,9 @@
-import React, { CSSProperties, ReactNodeArray, useState } from 'react';
+import React, { CSSProperties, ReactNodeArray, ReactNode, useState } from 'react';
 
 export type SwipableProps = {
   children: ReactNodeArray;
+  naviLeftIcon?: ReactNode;
+  naviRightIcon?: ReactNode;
 };
 
 type SwipeInfo =
@@ -101,8 +103,37 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       }
     }
   };
+  const naviCommonStyle: CSSProperties = {
+    top: '40%',
+    position: 'fixed',
+    zIndex: 900,
+  };
+  const naviLeft =
+    posterIdx > 0 && props.naviLeftIcon ? (
+      <div
+        style={{ ...naviCommonStyle, left: 0 }}
+        onClick={() => {
+          setPosterIdx(posterIdx - 1);
+        }}
+      >
+        {props.naviLeftIcon}
+      </div>
+    ) : null;
+  const naviRight =
+    posterIdx < props.children.length - 1 && props.naviRightIcon ? (
+      <div
+        style={{ ...naviCommonStyle, right: 0 }}
+        onClick={() => {
+          setPosterIdx(posterIdx + 1);
+        }}
+      >
+        {props.naviRightIcon}
+      </div>
+    ) : null;
   return (
     <div style={containerStyle}>
+      {naviLeft}
+      {naviRight}
       <div style={rootStyle}>
         {props.children.map((node, i) => (
           <div

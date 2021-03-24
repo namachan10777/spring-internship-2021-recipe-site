@@ -12,6 +12,7 @@ import queryByIds from '../graphql/ops/full_recipes_by_id';
 import 'tailwindcss/tailwind.css';
 import RecipeView from '../components/recipe_view';
 import Swipeable from '../components/swipable';
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
 type RecipePageProps = {
   main?: Recipe;
@@ -74,6 +75,12 @@ export default function RecipePageProps(props: RecipePageProps) {
         <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />
       </div>
       <Swipeable
+        naviLeftIcon={
+          <MdKeyboardArrowLeft className="text-6xl text-white" style={{ filter: 'drop-shadow(0px 0px 10px black)' }} />
+        }
+        naviRightIcon={
+          <MdKeyboardArrowRight className="text-6xl text-white" style={{ filter: 'drop-shadow(0px 0px 10px black)' }} />
+        }
         children={
           props.main
             ? [
