@@ -10,6 +10,7 @@ import { client } from '../lib/graphql_client';
 import query from '../graphql/ops/recipe';
 import 'tailwindcss/tailwind.css';
 import RecipeView from '../components/recipe_view';
+import Swipeable from '../components/swipable';
 
 type RecipePageProps = Recipe;
 
@@ -49,7 +50,7 @@ export default function RecipePageProps(props: RecipePageProps) {
         <meta property="og:image" content={props.image_url ? props.image_url : ''} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image:src" content={props.image_url ? props.image_url : ''} />
-        <meta name="twitter:description" content={props.description} />
+        <meta name="twitter:description" content={props.description} />{' '}
         <meta name="twitter:title" content={props.title} />
         <meta name="twitter:site" content="@namachan10777" />
       </Head>
@@ -64,12 +65,26 @@ export default function RecipePageProps(props: RecipePageProps) {
       <div className="my-4 mx-2">
         <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />
       </div>
-      <RecipeView
-        bookmarked={bookmarked}
-        bookmark={(_) => handleRegister()}
-        unbookmark={(_) => handleUnregister()}
-        recipe={props}
-      />
+      <Swipeable>
+        <RecipeView
+          bookmarked={bookmarked}
+          bookmark={(_) => handleRegister()}
+          unbookmark={(_) => handleUnregister()}
+          recipe={props}
+        />
+        <RecipeView
+          bookmarked={bookmarked}
+          bookmark={(_) => handleRegister()}
+          unbookmark={(_) => handleUnregister()}
+          recipe={props}
+        />
+        <RecipeView
+          bookmarked={bookmarked}
+          bookmark={(_) => handleRegister()}
+          unbookmark={(_) => handleUnregister()}
+          recipe={props}
+        />
+      </Swipeable>
     </div>
   );
 }
