@@ -18,9 +18,18 @@ type SwipeInfo =
   | { state: 'scroll' }
   | { state: 'move_start'; startX: number; startY: number };
 
+type SwipeAnimateState =
+  | { state: 'right'; timeoutId: NodeJS.Timeout }
+  | { state: 'left'; timeoutId: NodeJS.Timeout }
+  | { state: 'stop' };
+
+const swipeAnimateDuration = 300;
+
 const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   const [info, setInfo] = useState<SwipeInfo>({ state: 'stop' });
   const [posterIdx, setPosterIdx] = useState(0);
+  const [animateState, setAnimateState] = useState<SwipeAnimateState>({ state: 'stop' });
+  // これよくないね。class componentにしましょう
   const rootStyle: CSSProperties = {
     position: 'relative',
     transform:
@@ -28,9 +37,19 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
         ? `translate3d(${
             (info.currentX - info.startX) / (posterIdx == 0 || posterIdx == props.children.length - 1 ? 5 : 1)
           }px, 0, 0)`
+        : animateState.state == 'right'
+        ? 'translate(-100vw)'
+        : animateState.state == 'left'
+        ? 'translate(100vw)'
         : 'initial',
-    transition: info.state == 'moving' ? 'initial' : 'translate 200ms ease 0s',
+    transition:
+      info.state == 'moving'
+        ? 'initial'
+        : animateState.state == 'stop'
+        ? 'translate 200ms ease 0s'
+        : `translate ${swipeAnimateDuration}ms linear 0s`,
   };
+  console.log(rootStyle);
   const containerStyle: CSSProperties = {
     position: 'sticky',
     overflow: 'hidden',
@@ -60,6 +79,9 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     }
   };
   const handleStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (animateState.state == 'left' || animateState.state == 'right') {
+      clearTimeout(animateState.timeoutId);
+    }
     setInfo({
       state: 'move_start',
       startX: e.touches[0].clientX,
@@ -113,7 +135,16 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       <div
         style={{ ...naviCommonStyle, left: 0 }}
         onClick={() => {
-          setPosterIdx(posterIdx - 1);
+          if (animateState.state == 'left' || animateState.state == 'right') {
+            clearTimeout(animateState.timeoutId);
+          }
+          setAnimateState({
+            state: 'left',
+            timeoutId: setTimeout(() => {
+              setAnimateState({ state: 'stop' });
+              setPosterIdx(posterIdx - 1);
+            }, swipeAnimateDuration),
+          });
         }}
       >
         {props.naviLeftIcon}
@@ -124,7 +155,16 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       <div
         style={{ ...naviCommonStyle, right: 0 }}
         onClick={() => {
-          setPosterIdx(posterIdx + 1);
+          if (animateState.state == 'left' || animateState.state == 'right') {
+            clearTimeout(animateState.timeoutId);
+          }
+          setAnimateState({
+            state: 'right',
+            timeoutId: setTimeout(() => {
+              setAnimateState({ state: 'stop' });
+              setPosterIdx(posterIdx + 1);
+            }, swipeAnimateDuration),
+          });
         }}
       >
         {props.naviRightIcon}
