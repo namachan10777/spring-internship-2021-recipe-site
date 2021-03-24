@@ -24,8 +24,9 @@ const Heading: React.FC<HeadingProps> = (props: HeadingProps) => {
           <Image
             src={props.image_url ? props.image_url : '/dummy.png' }
             alt={props.title}
-            width={1280}
-            height={720}
+            width={640}
+            height={360}
+            layout="responsive"
           />
         </div>
       </Link>

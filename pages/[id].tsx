@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
@@ -65,7 +66,9 @@ export default function RecipePageProps(props: RecipePageProps) {
         <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />
       </div>
       {props.image_url ? (
-        <img className="w-full" src={props.image_url} width={1280} height={720} alt={props.title} />
+        <div className="w-full">
+          <Image src={props.image_url} width={1280} height={720} alt={props.title} layout="responsive"/>
+        </div>
       ) : null}
       <h1 className="text-2xl font-bold p-2">
         {bookmarked ? (
