@@ -6,37 +6,33 @@ export type SwipableProps = {
   naviRightIcon?: ReactNode;
 };
 
-type SwipeInfo =
+type AnimateState =
   | {
       state: 'moving';
       startX: number;
       currentX: number;
     }
-  | { state: 'released' }
   | {
       state: 'stop';
     }
   | { state: 'scroll' }
-  | { state: 'move_start'; startX: number; startY: number };
-
-type SwipeAnimateState =
   | { state: 'right'; timeoutId: NodeJS.Timeout }
   | { state: 'left'; timeoutId: NodeJS.Timeout }
-  | { state: 'stop' };
+  | { state: 'move_start'; startX: number; startY: number };
 
 const swipeAnimateDuration = 300;
 
 const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
-  const [info, setInfo] = useState<SwipeInfo>({ state: 'stop' });
   const [posterIdx, setPosterIdx] = useState(0);
-  const [animateState, setAnimateState] = useState<SwipeAnimateState>({ state: 'stop' });
+  const [animateState, setAnimateState] = useState<AnimateState>({ state: 'stop' });
   // これよくないね。class componentにしましょう
   const rootStyle: CSSProperties = {
     position: 'relative',
     transform:
-      info.state == 'moving'
+      animateState.state == 'moving'
         ? `translate3d(${
-            (info.currentX - info.startX) / (posterIdx == 0 || posterIdx == props.children.length - 1 ? 5 : 1)
+            (animateState.currentX - animateState.startX) /
+            (posterIdx == 0 || posterIdx == props.children.length - 1 ? 5 : 1)
           }px, 0, 0)`
         : animateState.state == 'right'
         ? 'translate(-100vw)'
@@ -44,15 +40,10 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
         ? 'translate(100vw)'
         : 'initial',
     transition:
-      info.state == 'moving'
-        ? 'initial'
-        : info.state == 'released'
-        ? 'transform 200ms ease 0s'
-        : animateState.state == 'stop'
+      animateState.state == 'moving' || animateState.state == 'scroll' || animateState.state == 'stop'
         ? 'initial'
         : `transform ${swipeAnimateDuration}ms ease 0s`,
   };
-  console.log(rootStyle);
   const containerStyle: CSSProperties = {
     position: 'sticky',
     overflow: 'hidden',
@@ -85,53 +76,68 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     if (animateState.state == 'left' || animateState.state == 'right') {
       clearTimeout(animateState.timeoutId);
     }
-    setInfo({
+    setAnimateState({
       state: 'move_start',
       startX: e.touches[0].clientX,
       startY: e.touches[0].clientY,
     });
   };
   const handleEnd = (_: React.TouchEvent<HTMLDivElement>) => {
-    if (info.state == 'moving' && document) {
-      const moved = info.currentX - info.startX;
+    if (animateState.state == 'moving' && document) {
+      const moved = animateState.currentX - animateState.startX;
       if (moved < -document.body.clientWidth / 2 && posterIdx < props.children.length - 1) {
-        setPosterIdx(posterIdx + 1);
+        autoSwipeRight();
       } else if (moved > document.body.clientWidth / 2 && posterIdx > 0) {
-        setPosterIdx(posterIdx - 1);
+        autoSwipeLeft();
       }
     }
-    setInfo({
-      state: 'released',
-    });
     setTimeout(() => {
-      setInfo({
+      setAnimateState({
         state: 'stop',
       });
     }, 200);
   };
   const handleMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (info.state == 'moving') {
-      setInfo({
+    if (animateState.state == 'moving') {
+      setAnimateState({
         state: 'moving',
-        startX: info.startX,
+        startX: animateState.startX,
         currentX: e.touches[0].clientX,
       });
-    } else if (info.state == 'move_start') {
+    } else if (animateState.state == 'move_start') {
       const touch = e.touches[0];
-      const move_direction = Math.abs((info.startX - touch.clientX) / (info.startY - touch.clientY));
+      const move_direction = Math.abs((animateState.startX - touch.clientX) / (animateState.startY - touch.clientY));
       // magic number
       if (move_direction > 1.0) {
-        setInfo({
+        setAnimateState({
           state: 'moving',
-          startX: info.startX,
+          startX: animateState.startX,
           currentX: touch.clientX,
         });
       } else {
-        setInfo({
+        setAnimateState({
           state: 'scroll',
         });
       }
     }
+  };
+  const autoSwipeRight = () => {
+    setAnimateState({
+      state: 'right',
+      timeoutId: setTimeout(() => {
+        setPosterIdx(posterIdx + 1);
+        setAnimateState({ state: 'stop' });
+      }, swipeAnimateDuration),
+    });
+  };
+  const autoSwipeLeft = () => {
+    setAnimateState({
+      state: 'left',
+      timeoutId: setTimeout(() => {
+        setPosterIdx(posterIdx - 1);
+        setAnimateState({ state: 'stop' });
+      }, swipeAnimateDuration),
+    });
   };
   const naviCommonStyle: CSSProperties = {
     top: '40%',
@@ -146,13 +152,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
           if (animateState.state == 'left' || animateState.state == 'right') {
             clearTimeout(animateState.timeoutId);
           }
-          setAnimateState({
-            state: 'left',
-            timeoutId: setTimeout(() => {
-              setAnimateState({ state: 'stop' });
-              setPosterIdx(posterIdx - 1);
-            }, swipeAnimateDuration),
-          });
+          autoSwipeLeft();
         }}
       >
         {props.naviLeftIcon}
@@ -166,13 +166,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
           if (animateState.state == 'left' || animateState.state == 'right') {
             clearTimeout(animateState.timeoutId);
           }
-          setAnimateState({
-            state: 'right',
-            timeoutId: setTimeout(() => {
-              setAnimateState({ state: 'stop' });
-              setPosterIdx(posterIdx + 1);
-            }, swipeAnimateDuration),
-          });
+          autoSwipeRight();
         }}
       >
         {props.naviRightIcon}
