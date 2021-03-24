@@ -70,21 +70,19 @@ export default function Home(props: HomeProps) {
     });
     setBookmarkMask(mask);
   }, []);
+  const drawerContents = [<Link href="/myfolder">マイフォルダ</Link>];
   return (
     <div>
       <Head>
         <title>クッキングパッド</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Drawer drawerElements={[]} width="300px" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <header className="bg-gray-300 p-2 flex flex-row items-center justify-between">
-          <button onClick={() => setDrawerOpen(!drawerOpen)}>
-            <MdMenu />
+      <Drawer drawerElements={drawerContents} width="300px" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <header className="bg-gray-300 flex flex-row items-center">
+          <button className="h-10 w-10" onClick={() => setDrawerOpen(!drawerOpen)}>
+            <MdMenu className="text-2xl mx-auto" />
           </button>
-          <h1 className="text-xl font-bold">クッキングパッド</h1>
-          <span className="mr-2">
-            <Link href="/myfolder">マイフォルダ</Link>
-          </span>
+          <h1 className="text-xl ml-4 my-2 font-bold">クッキングパッド</h1>
         </header>
         <div className="my-4 mx-2">
           <Search keyword={search} onSubmit={(searchWord) => handleSearch(searchWord)} />

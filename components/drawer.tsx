@@ -22,7 +22,8 @@ const Drawer: React.FC<PropsWithChildren<DrawerProps>> = (props: PropsWithChildr
   };
   const drawer_style: CSSProperties = {
     position: 'fixed',
-    width: props.open ? props.width : '0',
+    width: props.width,
+    transform: props.open ? 'none' : `translate(-${props.width})`,
     transition: 'opacity 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
     top: 0,
     overflowY: 'scroll',
