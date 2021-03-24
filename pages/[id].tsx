@@ -130,8 +130,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     if (queried.data.recipe) {
       return {
         props: queried.data.recipe,
-        revalidate: 1,
-      };
+        revalidate: 180,
+      }
     }
   }
   return {
