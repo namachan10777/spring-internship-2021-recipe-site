@@ -22,7 +22,7 @@ const Heading: React.FC<HeadingProps> = (props: HeadingProps) => {
       <Link href={`/${props.id}`}>
         <div className="w-5/12 flex-shrink-0 my-auto">
           <Image
-            src={props.image_url ? props.image_url : '/dummy.png' }
+            src={props.image_url ? props.image_url : '/dummy.png'}
             alt={props.title}
             width={640}
             height={360}
@@ -33,11 +33,11 @@ const Heading: React.FC<HeadingProps> = (props: HeadingProps) => {
       <div>
         <header className="text-lg mb-1 font-bold flex flex-row">
           {props.registered ? (
-            <button onClick={() => props.unregisterBookmark()}>
+            <button aria-label="unregister bookmark" onClick={() => props.unregisterBookmark()}>
               <IoMdHeart className="text-xl text-red-700 mx-1" />
             </button>
           ) : (
-            <button onClick={() => props.registerBookmark()}>
+            <button aria-label="bookmark" onClick={() => props.registerBookmark()}>
               <IoMdHeartEmpty className="text-xl text-black mx-1" />
             </button>
           )}

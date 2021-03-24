@@ -67,7 +67,7 @@ export default function RecipePageProps(props: RecipePageProps) {
       </div>
       {props.image_url ? (
         <div className="w-full">
-          <Image src={props.image_url} width={1280} height={720} alt={props.title} layout="responsive"/>
+          <Image src={props.image_url} width={1280} height={720} alt={props.title} layout="responsive" />
         </div>
       ) : null}
       <h1 className="text-2xl font-bold p-2">
