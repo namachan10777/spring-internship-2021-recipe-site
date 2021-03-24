@@ -1,8 +1,7 @@
 import gql from 'graphql-tag';
-
 export default gql`
-  query Recipe($id: ID!) {
-    recipe(id: $id) {
+  query FullRecipesByIds($ids: [ID!]!) {
+    recipesByIds(ids: $ids) {
       id
       title
       author {
@@ -14,8 +13,9 @@ export default gql`
         name
         quantity
       }
-      related_recipes
+      published_at
       steps
+      related_recipes
     }
   }
 `;

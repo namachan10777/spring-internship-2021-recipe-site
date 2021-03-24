@@ -19,7 +19,7 @@ export const typeDefs = gql`
     published_at: String!
     steps: [String!]!
     ingredients: [Ingredient!]!
-    related_recipes: [Int!]!
+    related_recipes: [ID!]!
   }
 
   type RecipesPage {
