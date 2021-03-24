@@ -1,3 +1,6 @@
+import gql from 'graphql-tag';
+
+export default gql`
 query Recipe ($id: ID!) {
   recipe(id: $id) {
     id
@@ -13,4 +16,4 @@ query Recipe ($id: ID!) {
     }
     steps
   }
-}
+}`;

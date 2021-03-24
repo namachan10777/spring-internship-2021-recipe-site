@@ -22,7 +22,7 @@
     "lint": "eslint pages/**.tsx",
     "lint-fix": "eslint --fix pages/**.tsx lib/**.ts",
     "typecheck": "graphql-codegen --config codegen.yml && tsc",
-    "fmt": "prettier -w pages/**.tsx pages/**/*.ts .eslintrc.js components/**.tsx",
+    "fmt": "prettier -w pages/**.tsx pages/**/*.ts .eslintrc.js components/**.tsx graphql/**/*.ts",
     "fmt-check": "prettier --check pages/**.tsx",
     "graphql": "graphql-codegen --config codegen.yml"
   },

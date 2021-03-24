@@ -7,10 +7,9 @@ import * as Bookmark from '../lib/bookmark';
 import 'tailwindcss/tailwind.css';
 import Heading from '../components/heading';
 import Search from '../components/search';
-import gql from 'graphql-tag';
-import { readFileSync } from 'fs';
 import { RecipesPage, RecipesPageQuery } from '../lib/generated/graphql';
 import { client } from '../lib/graphql_client';
+import query from '../graphql/ops/recipes_page';
 
 type HomeProps = {
   page: number;
@@ -104,24 +103,6 @@ export default function Home(props: HomeProps) {
     </div>
   );
 }
-
-const query = gql`
-  query RecipesPage($page: Int, $keyword: String) {
-    recipes(page: $page, keyword: $keyword) {
-      recipes {
-        id
-        title
-        author {
-          user_name
-        }
-        image_url
-        description
-      }
-      has_next
-      has_prev
-    }
-  }
-`;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const pageRaw = Number(context.query.page);

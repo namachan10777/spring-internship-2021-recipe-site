@@ -8,8 +8,7 @@ import Search from '../components/search';
 import { Recipe, RecipeQuery } from '../lib/generated/graphql';
 import * as Bookmark from '../lib/bookmark';
 import { client } from '../lib/graphql_client';
-import { readFileSync } from 'fs';
-import gql from 'graphql-tag';
+import query from '../graphql/ops/recipe';
 import 'tailwindcss/tailwind.css';
 
 type RecipePageProps = Recipe;
@@ -110,25 +109,6 @@ export default function RecipePageProps(props: RecipePageProps) {
     </div>
   );
 }
-
-const query = gql`
-  query Recipe($id: ID!) {
-    recipe(id: $id) {
-      id
-      title
-      author {
-        user_name
-      }
-      image_url
-      description
-      ingredients {
-        name
-        quantity
-      }
-      steps
-    }
-  }
-`;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = Number(context.params?.id);

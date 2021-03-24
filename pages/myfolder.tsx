@@ -7,25 +7,11 @@ import Heading from '../components/heading';
 import { RecipesByIdsQuery, RecipesByIdsQueryResult } from '../lib/generated/graphql';
 import * as Bookmark from '../lib/bookmark';
 import { client } from '../lib/graphql_client';
-import gql from 'graphql-tag';
+import query from '../graphql/ops/recipe';
 
 type MyFolderProps = {
   page: number;
 };
-
-const query = gql`
-  query RecipesByIds($ids: [ID!]!) {
-    recipesByIds(ids: $ids) {
-      id
-      title
-      author {
-        user_name
-      }
-      image_url
-      description
-    }
-  }
-`;
 
 export default function MyFolder(props: MyFolderProps) {
   const genQuery = (page: number) => (page === 1 ? '' : `?page=${page}`);
