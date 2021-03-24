@@ -73,19 +73,31 @@ export default function RecipePageProps(props: RecipePageProps) {
       <div className="my-4 mx-2">
         <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />
       </div>
-      <Swipeable>
-        {props.main ? (
-          <RecipeView
-            bookmarked={bookmarked}
-            bookmark={(_) => handleRegister()}
-            unbookmark={(_) => handleUnregister()}
-            recipe={props.main}
-          />
-        ) : null}
-        {props.related_recipes.map((recipe) => (
-          <RecipeView bookmarked={false} recipe={recipe} bookmark={() => {}} unbookmark={() => {}} key={recipe.id} />
-        ))}
-      </Swipeable>
+      <Swipeable
+        children={
+          props.main
+            ? [
+                <RecipeView
+                  bookmarked={bookmarked}
+                  bookmark={(_) => handleRegister()}
+                  unbookmark={(_) => handleUnregister()}
+                  recipe={props.main}
+                  key={props.main.id}
+                />,
+              ].concat(
+                props.related_recipes.map((recipe) => (
+                  <RecipeView
+                    bookmarked={false}
+                    recipe={recipe}
+                    bookmark={() => {}}
+                    unbookmark={() => {}}
+                    key={recipe.id}
+                  />
+                ))
+              )
+            : []
+        }
+      />
     </div>
   );
 }

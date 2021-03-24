@@ -16,7 +16,7 @@ type SwipeInfo =
 
 const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   const [info, setInfo] = useState<SwipeInfo>({ state: 'stop' });
-  const [posterIdx, _] = useState(0);
+  const [posterIdx, setPosterIdx] = useState(0);
   const rootStyle: CSSProperties = {
     position: 'relative',
     transform: info.state == 'stop' ? 'initial' : `translate3d(${info.currentX - info.startX}px, 0, 0)`,
@@ -58,6 +58,15 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     });
   };
   const handleEnd = (_: React.TouchEvent<HTMLDivElement>) => {
+    console.log(props.children);
+    if (info.state == 'moving' && document) {
+      const moved = info.currentX - info.startX;
+      if (moved < -document.body.clientWidth / 2 && posterIdx < props.children.length - 1) {
+        setPosterIdx(posterIdx + 1);
+      } else if (moved > document.body.clientWidth / 2 && posterIdx > 0) {
+        setPosterIdx(posterIdx - 1);
+      }
+    }
     setInfo({
       state: 'stop',
     });
