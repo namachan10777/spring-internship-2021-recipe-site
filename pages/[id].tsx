@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
@@ -43,7 +43,7 @@ export default function RecipePageProps(props: RecipePageProps) {
         <meta property="og:title" content={props.title} />
         <meta property="og:description" content={props.description} />
         <meta property="og:type" content="article" />
-        <meta property="og:article:author" content={props.author.user_name} />
+        <meta property="og:article:author" content={props.author?.user_name} />
         <meta property="og:article:published_time" content={props.published_at} />
         <meta property="og:article:modified_time" content={props.published_at} />
         <meta property="og:article:section" content="Cooking" />
@@ -84,14 +84,14 @@ export default function RecipePageProps(props: RecipePageProps) {
       </h1>
 
       <div className="flex flex-row justify-between m-2">
-        <span className="block">{props.author.user_name}</span>
+        <span className="block">{props.author?.user_name}</span>
         <span className="block">{props.published_at}</span>
       </div>
       <p className="p-4">{props.description}</p>
       <section>
         <header className="px-4 bg-gray-300 text-lg font-bold">材料</header>
         <ul role="list">
-          {props.ingredients.map((ingredient, i) => (
+          {props.ingredients?.map((ingredient, i) => (
             <li key={i} className="border-b-2 flex justify-between p-2">
               <div>{ingredient.name}</div>
               <div>{ingredient.quantity}</div>
@@ -102,7 +102,7 @@ export default function RecipePageProps(props: RecipePageProps) {
       <section>
         <header className="px-4 bg-gray-300 text-lg font-bold">手順</header>
         <ol className="list-inside list-decimal">
-          {props.steps.map((step, i) => (
+          {props.steps?.map((step, i) => (
             <li key={i} className="border-b-2 p-2 font-bold">
               <span className="ml-1 font-normal">{step}</span>
             </li>
@@ -113,7 +113,12 @@ export default function RecipePageProps(props: RecipePageProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getStaticPaths = async () => ({
+  paths: [],
+  fallback: true,
+});
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const id = Number(context.params?.id);
   if (id) {
     const queried = await client.query<RecipeQuery>({ query, variables: { id } });
@@ -125,6 +130,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (queried.data.recipe) {
       return {
         props: queried.data.recipe,
+        revalidate: 1,
       };
     }
   }
