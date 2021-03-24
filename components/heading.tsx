@@ -20,13 +20,14 @@ const Heading: React.FC<HeadingProps> = (props: HeadingProps) => {
   return (
     <section className="flex flex-row my-1 border-b-2 p-2">
       <Link href={`/${props.id}`}>
-        <Image
-          src={props.image_url ? props.image_url : 'dummy'}
-          alt={props.title}
-          width={1280}
-          height={720}
-          className="w-5/12 flex-shrink-0 my-auto"
-        />
+        <div className="w-5/12 flex-shrink-0 my-auto">
+          <Image
+            src={props.image_url ? props.image_url : '/dummy.png' }
+            alt={props.title}
+            width={1280}
+            height={720}
+          />
+        </div>
       </Link>
       <div>
         <header className="text-lg mb-1 font-bold flex flex-row">
