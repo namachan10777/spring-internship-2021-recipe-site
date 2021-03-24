@@ -12,6 +12,7 @@ type SwipeInfo =
       startX: number;
       currentX: number;
     }
+  | { state: 'released' }
   | {
       state: 'stop';
     }
@@ -45,9 +46,11 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     transition:
       info.state == 'moving'
         ? 'initial'
+        : info.state == 'released'
+        ? 'transform 200ms ease 0s'
         : animateState.state == 'stop'
-        ? 'translate 200ms ease 0s'
-        : `translate ${swipeAnimateDuration}ms linear 0s`,
+        ? 'initial'
+        : `transform ${swipeAnimateDuration}ms ease 0s`,
   };
   console.log(rootStyle);
   const containerStyle: CSSProperties = {
@@ -98,8 +101,13 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       }
     }
     setInfo({
-      state: 'stop',
+      state: 'released',
     });
+    setTimeout(() => {
+      setInfo({
+        state: 'stop',
+      });
+    }, 200);
   };
   const handleMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (info.state == 'moving') {
