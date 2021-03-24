@@ -5,7 +5,7 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import * as Bookmark from '../lib/bookmark';
 import 'tailwindcss/tailwind.css';
-import { MdMenu } from 'react-icons/md';
+import { MdBookmark, MdMenu } from 'react-icons/md';
 import Heading from '../components/heading';
 import Search from '../components/search';
 import { RecipesPage, RecipesPageQuery } from '../lib/generated/graphql';
@@ -70,7 +70,16 @@ export default function Home(props: HomeProps) {
     });
     setBookmarkMask(mask);
   }, []);
-  const drawerContents = [<Link href="/myfolder">マイフォルダ</Link>];
+  const drawerContents = [
+    <div key="myfolder" className="text-xl border-b p-2 cursor-pointer">
+      <Link href="/myfolder">
+        <span className="inline-flex items-center">
+          <MdBookmark className="text-2xl mr-2" />
+          マイフォルダ
+        </span>
+      </Link>
+    </div>,
+  ];
   return (
     <div>
       <Head>
