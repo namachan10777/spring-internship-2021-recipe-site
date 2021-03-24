@@ -16,12 +16,40 @@ type SwipeInfo =
 
 const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   const [info, setInfo] = useState<SwipeInfo>({ state: 'stop' });
-  const root_style: CSSProperties = {};
-  const style: CSSProperties = {
-    transform: info.state == 'moving' ? `translate(${info.currentX - info.startX}px)` : 'initial',
-    transition: info.state == 'stop' ? 'translate 200ms ease 0s' : undefined,
+  const [posterIdx, _] = useState(0);
+  const rootStyle: CSSProperties = {
+    position: 'relative',
+    transform: info.state == 'stop' ? 'initial' : `translate3d(${info.currentX - info.startX}px, 0, 0)`,
+    transition: info.state == 'stop' ? 'translate 200ms ease 0s' : 'initial',
   };
-  console.log(style);
+  const containerStyle: CSSProperties = {
+    position: 'sticky',
+    overflow: 'hidden',
+    width: '100%',
+  };
+  const posterStyle = (id: number): CSSProperties => {
+    if (id == posterIdx) {
+      return {};
+    } else if (id == posterIdx + 1 && document) {
+      return {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        transform: 'translate(100vw)',
+      };
+    } else if (id == posterIdx - 1 && document) {
+      return {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        transform: 'translate(-100vw)',
+      };
+    } else {
+      return {
+        display: 'none',
+      };
+    }
+  };
   const handleStart = (e: React.TouchEvent<HTMLDivElement>) => {
     setInfo({
       state: 'moving',
@@ -44,18 +72,20 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     }
   };
   return (
-    <div style={root_style}>
-      {props.children.map((node, i) => (
-        <div
-          key={i}
-          style={style}
-          onTouchMove={(e) => handleMove(e)}
-          onTouchStart={(e) => handleStart(e)}
-          onTouchEnd={(e) => handleEnd(e)}
-        >
-          {node}
-        </div>
-      ))}
+    <div style={containerStyle}>
+      <div style={rootStyle}>
+        {props.children.map((node, i) => (
+          <div
+            key={i}
+            style={posterStyle(i)}
+            onTouchMove={(e) => handleMove(e)}
+            onTouchStart={(e) => handleStart(e)}
+            onTouchEnd={(e) => handleEnd(e)}
+          >
+            {node}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
