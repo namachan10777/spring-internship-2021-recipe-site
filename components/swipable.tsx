@@ -24,6 +24,7 @@ const swipeAnimateDuration = 300;
 
 const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   const [posterIdx, setPosterIdx] = useState(0);
+  const [swiped, setSwiped] = useState(false);
   const [animateState, setAnimateState] = useState<AnimateState>({ state: 'stop' });
   // これよくないね。class componentにしましょう
   const rootStyle: CSSProperties = {
@@ -50,7 +51,17 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     width: '100%',
   };
   const posterStyle = (id: number): CSSProperties => {
-    if (id == posterIdx) {
+    if (id == 1 && !swiped) {
+      // TODO animation
+      return {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        boxShadow: '-10px 0px 10px rgba(0, 0, 0, 0.4)',
+        transform: 'translate(100vw)',
+      };
+    }
+    else if (id == posterIdx) {
       return {};
     } else if (id == posterIdx + 1) {
       return {
@@ -73,6 +84,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     }
   };
   const handleStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setSwiped(true);
     if (animateState.state == 'left' || animateState.state == 'right') {
       clearTimeout(animateState.timeoutId);
     }
@@ -144,6 +156,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       <div
         style={{ ...naviCommonStyle, left: 0 }}
         onClick={() => {
+          setSwiped(true);
           if (animateState.state == 'left' || animateState.state == 'right') {
             clearTimeout(animateState.timeoutId);
           }
@@ -158,6 +171,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       <div
         style={{ ...naviCommonStyle, right: 0 }}
         onClick={() => {
+          setSwiped(true);
           if (animateState.state == 'left' || animateState.state == 'right') {
             clearTimeout(animateState.timeoutId);
           }
