@@ -7,7 +7,7 @@ import Heading from '../components/heading';
 import { RecipesByIdsQuery, RecipesByIdsQueryResult } from '../lib/generated/graphql';
 import * as Bookmark from '../lib/bookmark';
 import { client } from '../lib/graphql_client';
-import query from '../graphql/ops/recipe';
+import query from '../graphql/ops/recipes_by_id';
 
 type MyFolderProps = {
   page: number;
