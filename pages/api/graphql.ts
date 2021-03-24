@@ -49,7 +49,7 @@ class CookpadAPI extends RESTDataSource {
       published_at: res.published_at,
       steps: res.steps,
       ingredients: res.ingredients,
-      related_recipes: res.related_recipes,
+      related_recipes: res.related_recipes.map((id) => id.toString()),
     };
   }
 }

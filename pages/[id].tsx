@@ -4,15 +4,19 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
 import Search from '../components/search';
-import { Recipe, RecipeQuery } from '../lib/generated/graphql';
+import { Recipe, RecipeQuery, FullRecipesByIdsQuery } from '../lib/generated/graphql';
 import * as Bookmark from '../lib/bookmark';
 import { client } from '../lib/graphql_client';
 import query from '../graphql/ops/recipe';
+import queryByIds from '../graphql/ops/full_recipes_by_id';
 import 'tailwindcss/tailwind.css';
 import RecipeView from '../components/recipe_view';
 import Swipeable from '../components/swipable';
 
-type RecipePageProps = Recipe;
+type RecipePageProps = {
+  main?: Recipe;
+  related_recipes: Recipe[];
+};
 
 export default function RecipePageProps(props: RecipePageProps) {
   const router = useRouter();
@@ -25,33 +29,37 @@ export default function RecipePageProps(props: RecipePageProps) {
   };
   const [bookmarked, setBookmared] = useState(false);
   useEffect(() => {
-    setBookmared(Bookmark.include(props.id));
+    if (props.main) setBookmared(Bookmark.include(props.main.id));
   }, []);
   const handleUnregister = () => {
-    Bookmark.unregister(props.id);
-    setBookmared(false);
+    if (props.main) {
+      Bookmark.unregister(props.main.id);
+      setBookmared(false);
+    }
   };
   const handleRegister = () => {
-    Bookmark.register(props.id);
-    setBookmared(true);
+    if (props.main) {
+      Bookmark.register(props.main.id);
+      setBookmared(true);
+    }
   };
   return (
     <div>
       <Head>
-        <title>{props.title}</title>
+        <title>{props.main?.title}</title>
         <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content={props.title} />
-        <meta property="og:description" content={props.description} />
+        <meta property="og:title" content={props.main?.title} />
+        <meta property="og:description" content={props.main?.description} />
         <meta property="og:type" content="article" />
-        <meta property="og:article:author" content={props.author.user_name} />
-        <meta property="og:article:published_time" content={props.published_at} />
-        <meta property="og:article:modified_time" content={props.published_at} />
+        <meta property="og:article:author" content={props.main?.author.user_name} />
+        <meta property="og:article:published_time" content={props.main?.published_at} />
+        <meta property="og:article:modified_time" content={props.main?.published_at} />
         <meta property="og:article:section" content="Cooking" />
-        <meta property="og:image" content={props.image_url ? props.image_url : ''} />
+        <meta property="og:image" content={props.main?.image_url ? props.main?.image_url : ''} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image:src" content={props.image_url ? props.image_url : ''} />
-        <meta name="twitter:description" content={props.description} />{' '}
-        <meta name="twitter:title" content={props.title} />
+        <meta name="twitter:image:src" content={props.main?.image_url ? props.main?.image_url : ''} />
+        <meta name="twitter:description" content={props.main?.description} />{' '}
+        <meta name="twitter:title" content={props.main?.title} />
         <meta name="twitter:site" content="@namachan10777" />
       </Head>
       <header className="bg-gray-300 p-2  flex flex-row items-center justify-between">
@@ -66,24 +74,17 @@ export default function RecipePageProps(props: RecipePageProps) {
         <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />
       </div>
       <Swipeable>
-        <RecipeView
-          bookmarked={bookmarked}
-          bookmark={(_) => handleRegister()}
-          unbookmark={(_) => handleUnregister()}
-          recipe={props}
-        />
-        <RecipeView
-          bookmarked={bookmarked}
-          bookmark={(_) => handleRegister()}
-          unbookmark={(_) => handleUnregister()}
-          recipe={props}
-        />
-        <RecipeView
-          bookmarked={bookmarked}
-          bookmark={(_) => handleRegister()}
-          unbookmark={(_) => handleUnregister()}
-          recipe={props}
-        />
+        {props.main ? (
+          <RecipeView
+            bookmarked={bookmarked}
+            bookmark={(_) => handleRegister()}
+            unbookmark={(_) => handleUnregister()}
+            recipe={props.main}
+          />
+        ) : null}
+        {props.related_recipes.map((recipe) => (
+          <RecipeView bookmarked={false} recipe={recipe} bookmark={() => {}} unbookmark={() => {}} key={recipe.id} />
+        ))}
       </Swipeable>
     </div>
   );
@@ -99,8 +100,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       };
     }
     if (queried.data.recipe) {
+      const related = await client.query<FullRecipesByIdsQuery>({
+        query: queryByIds,
+        variables: { ids: queried.data.recipe.related_recipes },
+      });
+      const related_recipes: Recipe[] = related.data.recipesByIds ? related.data.recipesByIds : [];
       return {
-        props: queried.data.recipe,
+        props: {
+          main: queried.data.recipe,
+          related_recipes,
+        },
       };
     }
   }

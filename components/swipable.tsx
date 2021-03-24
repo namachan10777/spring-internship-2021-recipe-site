@@ -30,14 +30,14 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   const posterStyle = (id: number): CSSProperties => {
     if (id == posterIdx) {
       return {};
-    } else if (id == posterIdx + 1 && document) {
+    } else if (id == posterIdx + 1) {
       return {
         position: 'absolute',
         top: 0,
         left: 0,
         transform: 'translate(100vw)',
       };
-    } else if (id == posterIdx - 1 && document) {
+    } else if (id == posterIdx - 1) {
       return {
         position: 'absolute',
         top: 0,
