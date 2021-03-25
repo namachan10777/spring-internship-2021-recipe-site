@@ -5,6 +5,8 @@ export type SwipableProps = {
   naviLeftIcon?: ReactNode;
   naviRightIcon?: ReactNode;
   indicateAnimation?: string;
+  initialIdx?: number;
+  onSwiped?: (before: number, after: number) => void;
 };
 
 type AnimateState =
@@ -26,7 +28,7 @@ type AnimateState =
 const swipeAnimateDuration = 300;
 
 const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
-  const [posterIdx, setPosterIdx] = useState(0);
+  const [posterIdx, setPosterIdx] = useState(props.initialIdx ? props.initialIdx : 0);
   const [swiped, setSwiped] = useState(false);
   const refRootDiv = useRef<HTMLDivElement>(null);
   const [animateState, setAnimateStateOrigin] = useState<AnimateState>({ state: 'stop' });
@@ -42,12 +44,10 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   }, [refRootDiv.current]);
   const swipingToEdge =
     animateState.state == 'moving'
-      ? posterIdx == 0
-        ? animateState.currentX > animateState.beforeX
-        : posterIdx == props.children.length - 1
-        ? animateState.currentX < animateState.beforeX
-        : false
+      ? (posterIdx == 0 && animateState.currentX > animateState.startX) ||
+        (posterIdx == props.children.length - 1 && animateState.currentX < animateState.startX)
       : false;
+  console.log(swipingToEdge);
   const rootStyle: CSSProperties = {
     position: 'relative',
     transform:
@@ -166,6 +166,9 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     setAnimateState({
       state: 'right',
       timeoutId: setTimeout(() => {
+        if (props.onSwiped) {
+          props.onSwiped(posterIdx, posterIdx + 1);
+        }
         setPosterIdx(posterIdx + 1);
         setAnimateState({ state: 'stop' });
         scrollTo({
@@ -178,6 +181,9 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     setAnimateState({
       state: 'left',
       timeoutId: setTimeout(() => {
+        if (props.onSwiped) {
+          props.onSwiped(posterIdx, posterIdx - 1);
+        }
         setPosterIdx(posterIdx - 1);
         setAnimateState({ state: 'stop' });
         scrollTo({
@@ -233,12 +239,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     <div style={containerStyle}>
       {naviLeft}
       {naviRight}
-      <div
-        style={rootStyle}
-        onTouchStart={(e) => handleStart(e)}
-        onTouchEnd={(e) => handleEnd(e)}
-        ref={refRootDiv}
-      >
+      <div style={rootStyle} onTouchStart={(e) => handleStart(e)} onTouchEnd={(e) => handleEnd(e)} ref={refRootDiv}>
         {props.children.map((node, i) => (
           <div key={i} style={posterStyle(i)}>
             {node}
