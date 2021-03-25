@@ -37,7 +37,7 @@ const DrawerContainer: React.FC<PropsWithChildren<Props>> = (props: PropsWithChi
           <Link href="/">クッキングパッド</Link>
         </h1>
       </header>
-      {props.search ? (
+      {props.search != null ? (
         <div className="my-4 mx-2">
           <Search keyword={props.search} onSubmit={(searchWord) => handleSearch(searchWord)} />
         </div>
