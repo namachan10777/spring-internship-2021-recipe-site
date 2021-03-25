@@ -8,6 +8,7 @@ import { RecipesByIdsQuery, RecipesByIdsQueryResult } from '../lib/generated/gra
 import * as Bookmark from '../lib/bookmark';
 import { client } from '../lib/graphql_client';
 import query from '../graphql/ops/recipes_by_id';
+import DrawerContainer from  '../components/drawerContainer';
 
 type MyFolderProps = {
   page: number;
@@ -92,28 +93,25 @@ export default function MyFolder(props: MyFolderProps) {
         <title>クッキングパッド</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <header className="bg-gray-300 p-2">
-        <h1 className="text-xl font-bold">
-          <Link href="/">クッキングパッド</Link>
-        </h1>
-      </header>
-      <main>{main_contents}</main>
-      <footer className="p-8 flex flex-row justify-between">
-        {prevExists ? (
-          <span>
-            <Link href={`/${genQuery(page - 1)}`}>前のページ</Link>
-          </span>
-        ) : (
-          <span />
-        )}
-        {nextExists ? (
-          <span>
-            <Link href={`/${genQuery(page + 1)}`}>次のページ</Link>
-          </span>
-        ) : (
-          <span />
-        )}
-      </footer>
+      <DrawerContainer>
+        <main>{main_contents}</main>
+        <footer className="p-8 flex flex-row justify-between">
+          {prevExists ? (
+            <span>
+              <Link href={`/${genQuery(page - 1)}`}>前のページ</Link>
+            </span>
+          ) : (
+            <span />
+          )}
+          {nextExists ? (
+            <span>
+              <Link href={`/${genQuery(page + 1)}`}>次のページ</Link>
+            </span>
+          ) : (
+            <span />
+          )}
+        </footer>
+      </DrawerContainer>
     </div>
   );
 }

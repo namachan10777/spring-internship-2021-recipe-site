@@ -2,16 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/dist/client/router';
 import * as Bookmark from '../lib/bookmark';
 import 'tailwindcss/tailwind.css';
-import { MdBookmark, MdMenu } from 'react-icons/md';
 import Heading from '../components/heading';
-import Search from '../components/search';
 import { RecipesPage, RecipesPageQuery } from '../lib/generated/graphql';
 import { client } from '../lib/graphql_client';
 import query from '../graphql/ops/recipes_page';
-import Drawer from '../components/drawer';
+import DrawerContainer from '../components/drawerContainer';
 
 type HomeProps = {
   page: number;
@@ -20,18 +17,12 @@ type HomeProps = {
 };
 
 export default function Home(props: HomeProps) {
-  const router = useRouter();
   const { search, page, queried } = props;
   const genPageQuery = (p: number) => (p === 0 ? '' : `page=${p}`);
   const genSearchQuery = (s: string) => (s === '' ? '' : `search=${s}`);
   const genQuery = (p: number, s: string): string => {
     const queryString = [genPageQuery(p), genSearchQuery(s)].filter((query) => query !== '').join('&');
     return queryString === '' ? '' : `?${queryString}`;
-  };
-  const handleSearch = (searchWord: string) => {
-    if (search !== searchWord) {
-      router.push(`/?search=${searchWord}`);
-    }
   };
   const [bookmarkMask, setBookmarkMask] = useState<{ [key: string]: boolean }>({});
   const unregisterBookmark = (id: string) => {
@@ -62,7 +53,6 @@ export default function Home(props: HomeProps) {
     ) : (
       <span className="text-2xl">レシピが見つかりませんでした</span>
     );
-  const [drawerOpen, setDrawerOpen] = useState(false);
   useEffect(() => {
     const mask: { [key: string]: boolean } = {};
     recipes.forEach((recipe) => {
@@ -70,32 +60,13 @@ export default function Home(props: HomeProps) {
     });
     setBookmarkMask(mask);
   }, []);
-  const drawerContents = [
-    <div key="myfolder" className="text-xl border-b p-2 cursor-pointer">
-      <Link href="/myfolder">
-        <span className="inline-flex items-center">
-          <MdBookmark className="text-2xl mr-2" />
-          マイフォルダ
-        </span>
-      </Link>
-    </div>,
-  ];
   return (
     <div>
       <Head>
         <title>クッキングパッド</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Drawer drawerElements={drawerContents} width="300px" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <header className="bg-gray-300 flex flex-row items-center">
-          <button className="h-10 w-10" onClick={() => setDrawerOpen(!drawerOpen)}>
-            <MdMenu className="text-2xl mx-auto" />
-          </button>
-          <h1 className="text-xl ml-4 my-2 font-bold">クッキングパッド</h1>
-        </header>
-        <div className="my-4 mx-2">
-          <Search keyword={search} onSubmit={(searchWord) => handleSearch(searchWord)} />
-        </div>
+      <DrawerContainer search={search}>
         <main>{main_contents}</main>
         <footer className="p-8 flex flex-row justify-between">
           {has_prev ? (
@@ -113,7 +84,7 @@ export default function Home(props: HomeProps) {
             <span />
           )}
         </footer>
-      </Drawer>
+      </DrawerContainer>
     </div>
   );
 }

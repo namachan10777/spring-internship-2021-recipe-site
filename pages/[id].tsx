@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
-import { useRouter } from 'next/dist/client/router';
-import Link from 'next/link';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
-import Search from '../components/search';
 import { Recipe, RecipeQuery, FullRecipesByIdsQuery } from '../lib/generated/graphql';
 import * as Bookmark from '../lib/bookmark';
 import { client } from '../lib/graphql_client';
@@ -13,6 +10,7 @@ import queryByIds from '../graphql/ops/full_recipes_by_id';
 import 'tailwindcss/tailwind.css';
 import RecipeView from '../components/recipe_view';
 import Swipeable from '../components/swipable';
+import DrawerContainer from '../components/drawerContainer';
 
 type RecipePageProps = {
   main?: Recipe;
@@ -20,14 +18,6 @@ type RecipePageProps = {
 };
 
 export default function RecipePageProps(props: RecipePageProps) {
-  const router = useRouter();
-  const handleSearch = (searchWord: string) => {
-    if (searchWord == '') {
-      router.push('/');
-    } else {
-      router.push(`/?search=${searchWord}`);
-    }
-  };
   const [bookmarked, setBookmared] = useState(false);
   useEffect(() => {
     if (props.main) setBookmared(Bookmark.include(props.main.id));
@@ -63,49 +53,40 @@ export default function RecipePageProps(props: RecipePageProps) {
         <meta name="twitter:title" content={props.main?.title} />
         <meta name="twitter:site" content="@namachan10777" />
       </Head>
-      <header className="bg-gray-300 p-2  flex flex-row items-center justify-between">
-        <h2 className="text-xl font-bold">
-          <Link href="/">クッキングパッド</Link>
-        </h2>
-        <span className="mr-2">
-          <Link href="/myfolder">マイフォルダ</Link>
-        </span>
-      </header>
-      <div className="my-4 mx-2">
-        <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />
-      </div>
-      <Swipeable
-        indicateAnimation={'swipe-indication 3s linear 0s infinite'}
-        naviLeftIcon={
-          <MdKeyboardArrowLeft className="text-6xl text-white" style={{ filter: 'drop-shadow(0px 0px 10px black)' }} />
-        }
-        naviRightIcon={
-          <MdKeyboardArrowRight className="text-6xl text-white" style={{ filter: 'drop-shadow(0px 0px 10px black)' }} />
-        }
-        children={
-          props.main
-            ? [
-                <RecipeView
-                  bookmarked={bookmarked}
-                  bookmark={(_) => handleRegister()}
-                  unbookmark={(_) => handleUnregister()}
-                  recipe={props.main}
-                  key={props.main.id}
-                />,
-              ].concat(
-                props.related_recipes.map((recipe) => (
+      <DrawerContainer search=''>
+        <Swipeable
+          indicateAnimation={'swipe-indication 3s linear 0s infinite'}
+          naviLeftIcon={
+            <MdKeyboardArrowLeft className="text-6xl text-white" style={{ filter: 'drop-shadow(0px 0px 10px black)' }} />
+          }
+          naviRightIcon={
+            <MdKeyboardArrowRight className="text-6xl text-white" style={{ filter: 'drop-shadow(0px 0px 10px black)' }} />
+          }
+          children={
+            props.main
+              ? [
                   <RecipeView
-                    bookmarked={false}
-                    recipe={recipe}
-                    bookmark={() => {}}
-                    unbookmark={() => {}}
-                    key={recipe.id}
-                  />
-                ))
-              )
-            : []
-        }
-      />
+                    bookmarked={bookmarked}
+                    bookmark={(_) => handleRegister()}
+                    unbookmark={(_) => handleUnregister()}
+                    recipe={props.main}
+                    key={props.main.id}
+                  />,
+                ].concat(
+                  props.related_recipes.map((recipe) => (
+                    <RecipeView
+                      bookmarked={false}
+                      recipe={recipe}
+                      bookmark={() => {}}
+                      unbookmark={() => {}}
+                      key={recipe.id}
+                    />
+                  ))
+                )
+              : []
+          }
+        />
+      </DrawerContainer>
     </div>
   );
 }
