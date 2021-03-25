@@ -1,15 +1,15 @@
-import React, {PropsWithChildren, useState} from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import Link from 'next/link';
 import Drawer from './drawer';
 import Search from './search';
 import { useRouter } from 'next/dist/client/router';
-import {MdBookmark, MdMenu} from 'react-icons/md';
+import { MdBookmark, MdMenu } from 'react-icons/md';
 
 export type Props = {
-  search?: string,
+  search?: string;
 };
 
-const DrawerContainer:React.FC<PropsWithChildren<Props>> = (props: PropsWithChildren<Props>) => {
+const DrawerContainer: React.FC<PropsWithChildren<Props>> = (props: PropsWithChildren<Props>) => {
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const handleSearch = (searchWord: string) => {
@@ -29,17 +29,20 @@ const DrawerContainer:React.FC<PropsWithChildren<Props>> = (props: PropsWithChil
   ];
   return (
     <Drawer drawerElements={drawerContents} width="300px" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <header className="bg-gray-300 flex flex-row items-center">
-          <button className="h-10 w-10" onClick={() => setDrawerOpen(!drawerOpen)}>
-            <MdMenu className="text-2xl mx-auto" />
-          </button>
-          <h1 className="text-xl ml-4 my-2 font-bold"><Link href='/'>クッキングパッド</Link></h1>
-        </header>
-        {props.search ? 
-          <div className="my-4 mx-2">
-            <Search keyword={props.search} onSubmit={(searchWord) => handleSearch(searchWord)} />
-          </div> : null}
-        {props.children}
+      <header className="bg-gray-300 flex flex-row items-center">
+        <button className="h-10 w-10" onClick={() => setDrawerOpen(!drawerOpen)}>
+          <MdMenu className="text-2xl mx-auto" />
+        </button>
+        <h1 className="text-xl ml-4 my-2 font-bold">
+          <Link href="/">クッキングパッド</Link>
+        </h1>
+      </header>
+      {props.search ? (
+        <div className="my-4 mx-2">
+          <Search keyword={props.search} onSubmit={(searchWord) => handleSearch(searchWord)} />
+        </div>
+      ) : null}
+      {props.children}
     </Drawer>
   );
 };

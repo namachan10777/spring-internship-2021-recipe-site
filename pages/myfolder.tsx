@@ -8,7 +8,7 @@ import { RecipesByIdsQuery, RecipesByIdsQueryResult } from '../lib/generated/gra
 import * as Bookmark from '../lib/bookmark';
 import { client } from '../lib/graphql_client';
 import query from '../graphql/ops/recipes_by_id';
-import DrawerContainer from  '../components/drawerContainer';
+import DrawerContainer from '../components/drawerContainer';
 
 type MyFolderProps = {
   page: number;
