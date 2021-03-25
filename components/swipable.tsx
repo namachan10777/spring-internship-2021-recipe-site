@@ -111,9 +111,9 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       const swipeableToLeft = posterIdx > 0;
       const viewWidth = document.body.clientWidth;
       // スワイプで次の要素へ移る処理
-      if (swipeableToRight && (moved < -viewWidth / 3 || (moved < -viewWidth / 5 && accel < -5))) {
+      if (swipeableToRight && (moved < (-viewWidth * 2) / 3 || (moved < -viewWidth / 10 && accel < -5))) {
         autoSwipeRight();
-      } else if (swipeableToLeft && (moved > viewWidth / 3 || (moved > viewWidth / 5 && accel > 5))) {
+      } else if (swipeableToLeft && (moved > (viewWidth * 2) / 3 || (moved > viewWidth / 10 && accel > 5))) {
         autoSwipeLeft();
       } else {
         cancelSwipe();
