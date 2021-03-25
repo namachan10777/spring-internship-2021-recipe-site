@@ -57,12 +57,13 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     overflow: 'hidden',
     width: '100%',
   };
+  const topMargin = process.browser ? document.documentElement.scrollTop : 0;
   const posterStyle = (id: number): CSSProperties => {
     if (id == 1 && !swiped) {
       // TODO animation
       return {
         position: 'absolute',
-        top: 0,
+        top: topMargin,
         left: 0,
         boxShadow: '-10px 0px 10px rgba(0, 0, 0, 0.4)',
         animation: 'swipe-indication 3s linear 0s infinite',
@@ -74,14 +75,14 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     } else if (id == posterIdx + 1) {
       return {
         position: 'absolute',
-        top: 0,
+        top: topMargin,
         left: 0,
         transform: 'translate(100vw)',
       };
     } else if (id == posterIdx - 1) {
       return {
         position: 'absolute',
-        top: 0,
+        top: topMargin,
         left: 0,
         transform: 'translate(-100vw)',
       };
@@ -152,6 +153,9 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       timeoutId: setTimeout(() => {
         setPosterIdx(posterIdx + 1);
         setAnimateState({ state: 'stop' });
+        scrollTo({
+          top: 0,
+        });
       }, swipeAnimateDuration),
     });
   };
@@ -161,6 +165,9 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       timeoutId: setTimeout(() => {
         setPosterIdx(posterIdx - 1);
         setAnimateState({ state: 'stop' });
+        scrollTo({
+          top: 0,
+        });
       }, swipeAnimateDuration),
     });
   };
