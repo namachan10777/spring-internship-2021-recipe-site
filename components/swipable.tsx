@@ -29,14 +29,19 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   const [swiped, setSwiped] = useState(false);
   const [animateState, setAnimateState] = useState<AnimateState>({ state: 'stop' });
   // これよくないね。class componentにしましょう
+  const swipingToEdge =
+    animateState.state == 'moving'
+      ? posterIdx == 0
+        ? animateState.currentX > animateState.beforeX
+        : posterIdx == props.children.length - 1
+        ? animateState.currentX < animateState.beforeX
+        : false
+      : false;
   const rootStyle: CSSProperties = {
     position: 'relative',
     transform:
       animateState.state == 'moving'
-        ? `translate3d(${
-            (animateState.currentX - animateState.startX) /
-            (posterIdx == 0 || posterIdx == props.children.length - 1 ? 5 : 1)
-          }px, 0, 0)`
+        ? `translate3d(${(animateState.currentX - animateState.startX) / (swipingToEdge ? 6 : 2)}px, 0, 0)`
         : animateState.state == 'right'
         ? 'translate(-100vw)'
         : animateState.state == 'left'
