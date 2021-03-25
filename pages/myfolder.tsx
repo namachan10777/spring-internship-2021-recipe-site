@@ -39,7 +39,7 @@ export default function MyFolder(props: MyFolderProps) {
             id={recipe.id}
             key={recipe.id}
             title={recipe.title}
-            registered={true}
+            registered
             registerBookmark={() => handleUndo(recipe.id)}
             unregisterBookmark={() => handleUnregister(recipe.id)}
             description={recipe.description}
@@ -64,7 +64,7 @@ export default function MyFolder(props: MyFolderProps) {
     (async () => {
       const bookmarkIds = Bookmark.bookmarks(props.page);
       if (bookmarkIds && bookmarkIds.ids.length > 0) {
-        let mask: { [key: string]: boolean } = {};
+        const mask: { [key: string]: boolean } = {};
         bookmarkIds.ids.forEach((id: string) => (mask[id] = true));
         setBookmarkMask(mask);
         const queried = await client.query<RecipesByIdsQuery>({
@@ -82,7 +82,7 @@ export default function MyFolder(props: MyFolderProps) {
         setRecipes([]);
         setPrevExists(false);
         setNextExists(false);
-        return;
+        
       }
     })();
   }, []);

@@ -20,13 +20,13 @@ export function bookmarks(page: number):pagenatedBookmarks | null {
       prevExists: page > 1,
     };
   }
-  else {
+  
     return {
       ids: [],
       nextExists: false,
       prevExists: false,
     }
-  }
+  
 }
 
 export function include(id: string):boolean {
@@ -35,9 +35,9 @@ export function include(id: string):boolean {
     const bookmarks: string[] = JSON.parse(rawString);
     return bookmarks.includes(id);
   }
-  else {
+  
     return false;
-  }
+  
 }
 
 export function register(id: string) {

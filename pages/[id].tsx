@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { GetStaticProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import Search from '../components/search';
 import { Recipe, RecipeQuery, FullRecipesByIdsQuery } from '../lib/generated/graphql';
 import * as Bookmark from '../lib/bookmark';
@@ -12,7 +13,6 @@ import queryByIds from '../graphql/ops/full_recipes_by_id';
 import 'tailwindcss/tailwind.css';
 import RecipeView from '../components/recipe_view';
 import Swipeable from '../components/swipable';
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
 type RecipePageProps = {
   main?: Recipe;

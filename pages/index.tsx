@@ -64,7 +64,7 @@ export default function Home(props: HomeProps) {
     );
   const [drawerOpen, setDrawerOpen] = useState(false);
   useEffect(() => {
-    let mask: { [key: string]: boolean } = {};
+    const mask: { [key: string]: boolean } = {};
     recipes.forEach((recipe) => {
       mask[recipe.id] = Bookmark.include(recipe.id);
     });
@@ -131,7 +131,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         queried: null,
       },
     };
-  } else {
+  } 
     return {
       props: {
         page,
@@ -139,5 +139,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         queried: queried.data.recipes,
       },
     };
-  }
+  
 };
