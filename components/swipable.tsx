@@ -59,7 +59,9 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
         top: 0,
         left: 0,
         boxShadow: '-10px 0px 10px rgba(0, 0, 0, 0.4)',
-        transform: 'translate(100vw)',
+        animation: 'swipe-indication 3s linear 0s infinite',
+        background: 'white',
+        opacity: 1,
       };
     } else if (id == posterIdx) {
       return {};

@@ -14,3 +14,24 @@ a {
 * {
   box-sizing: border-box;
 }
+
+@keyframes swipe-indication {
+  0% {
+    transform: translateX(100vw);
+  }
+  35% {
+    transform: translateX(100vw);
+  }
+  42% {
+    transform: translateX(97vw);
+  }
+  58% {
+    transform: translateX(97vw);
+  }
+  65% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(100vw);
+  }
+}
