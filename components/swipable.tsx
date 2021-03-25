@@ -41,7 +41,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     position: 'relative',
     transform:
       animateState.state == 'moving'
-        ? `translate3d(${(animateState.currentX - animateState.startX) / (swipingToEdge ? 6 : 2)}px, 0, 0)`
+        ? `translate3d(${(animateState.currentX - animateState.startX) / (swipingToEdge ? 6 : 1.5)}px, 0, 0)`
         : animateState.state == 'right'
         ? 'translate(-100vw)'
         : animateState.state == 'left'
@@ -111,9 +111,9 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       const swipeableToLeft = posterIdx > 0;
       const viewWidth = document.body.clientWidth;
       // スワイプで次の要素へ移る処理
-      if (swipeableToRight && (moved < (-viewWidth * 2) / 3 || (moved < -viewWidth / 10 && accel < -5))) {
+      if (swipeableToRight && (moved < -viewWidth / 2 || accel < -1)) {
         autoSwipeRight();
-      } else if (swipeableToLeft && (moved > (viewWidth * 2) / 3 || (moved > viewWidth / 10 && accel > 5))) {
+      } else if (swipeableToLeft && (moved > viewWidth / 2 || accel > 1)) {
         autoSwipeLeft();
       } else {
         cancelSwipe();
