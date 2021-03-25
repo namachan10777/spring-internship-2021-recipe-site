@@ -75,6 +75,7 @@ export default function RecipePageProps(props: RecipePageProps) {
         <Search keyword="" onSubmit={(searchWord) => handleSearch(searchWord)} />
       </div>
       <Swipeable
+        indicateAnimation={'swipe-indication 3s linear 0s infinite'}
         naviLeftIcon={
           <MdKeyboardArrowLeft className="text-6xl text-white" style={{ filter: 'drop-shadow(0px 0px 10px black)' }} />
         }

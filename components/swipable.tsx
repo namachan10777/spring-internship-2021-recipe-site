@@ -4,6 +4,7 @@ export type SwipableProps = {
   children: ReactNodeArray;
   naviLeftIcon?: ReactNode;
   naviRightIcon?: ReactNode;
+  indicateAnimation?: string;
 };
 
 type AnimateState =
@@ -69,14 +70,14 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   };
   const topMargin = process.browser ? document.documentElement.scrollTop : 0;
   const posterStyle = (id: number): CSSProperties => {
-    if (id == 1 && !swiped) {
+    if (id == 1 && !swiped && props.indicateAnimation) {
       // TODO animation
       return {
         position: 'absolute',
         top: topMargin,
         left: 0,
         boxShadow: '-10px 0px 10px rgba(0, 0, 0, 0.4)',
-        animation: 'swipe-indication 3s linear 0s infinite',
+        animation: props.indicateAnimation,
         background: 'white',
         opacity: 1,
       };
@@ -234,7 +235,6 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       {naviRight}
       <div
         style={rootStyle}
-        //onTouchMove={(e) => handleMove(e)}
         onTouchStart={(e) => handleStart(e)}
         onTouchEnd={(e) => handleEnd(e)}
         ref={refRootDiv}
