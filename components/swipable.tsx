@@ -11,6 +11,7 @@ type AnimateState =
       state: 'moving';
       startX: number;
       currentX: number;
+      beforeX: number;
     }
   | {
       state: 'stop';
@@ -99,10 +100,15 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   const handleEnd = (_: React.TouchEvent<HTMLDivElement>) => {
     if (animateState.state == 'moving' && document) {
       const moved = animateState.currentX - animateState.startX;
+      const accel = animateState.currentX - animateState.beforeX;
+      console.log(accel);
+      const swipeableToRight = posterIdx < props.children.length - 1;
+      const swipeableToLeft = posterIdx > 0;
+      const viewWidth = document.body.clientWidth;
       // スワイプで次の要素へ移る処理
-      if (moved < -document.body.clientWidth / 4 && posterIdx < props.children.length - 1) {
+      if (swipeableToRight && (moved < -viewWidth / 3 || (moved < -viewWidth / 5 && accel < -5))) {
         autoSwipeRight();
-      } else if (moved > document.body.clientWidth / 4 && posterIdx > 0) {
+      } else if (swipeableToLeft && (moved > viewWidth / 3 || (moved > viewWidth / 5 && accel > 5))) {
         autoSwipeLeft();
       } else {
         cancelSwipe();
@@ -114,6 +120,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       setAnimateState({
         state: 'moving',
         startX: animateState.startX,
+        beforeX: animateState.currentX,
         currentX: e.touches[0].clientX,
       });
     } else if (animateState.state == 'move_start') {
@@ -123,6 +130,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       if (move_direction > 1.5) {
         setAnimateState({
           state: 'moving',
+          beforeX: animateState.startX,
           startX: animateState.startX,
           currentX: touch.clientX,
         });
