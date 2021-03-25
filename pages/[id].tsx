@@ -53,14 +53,20 @@ export default function RecipePageProps(props: RecipePageProps) {
         <meta name="twitter:title" content={props.main?.title} />
         <meta name="twitter:site" content="@namachan10777" />
       </Head>
-      <DrawerContainer search=''>
+      <DrawerContainer search="">
         <Swipeable
           indicateAnimation={'swipe-indication 3s linear 0s infinite'}
           naviLeftIcon={
-            <MdKeyboardArrowLeft className="text-6xl text-white" style={{ filter: 'drop-shadow(0px 0px 10px black)' }} />
+            <MdKeyboardArrowLeft
+              className="text-6xl text-white"
+              style={{ filter: 'drop-shadow(0px 0px 10px black)' }}
+            />
           }
           naviRightIcon={
-            <MdKeyboardArrowRight className="text-6xl text-white" style={{ filter: 'drop-shadow(0px 0px 10px black)' }} />
+            <MdKeyboardArrowRight
+              className="text-6xl text-white"
+              style={{ filter: 'drop-shadow(0px 0px 10px black)' }}
+            />
           }
           children={
             props.main

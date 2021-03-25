@@ -8,6 +8,7 @@ import { RecipesByIdsQuery, RecipesByIdsQueryResult } from '../lib/generated/gra
 import * as Bookmark from '../lib/bookmark';
 import { client } from '../lib/graphql_client';
 import query from '../graphql/ops/recipes_by_id';
+import { AiOutlineLoading } from 'react-icons/ai';
 import DrawerContainer from '../components/drawerContainer';
 
 type MyFolderProps = {
@@ -59,7 +60,13 @@ export default function MyFolder(props: MyFolderProps) {
       <span className="text-2xl">レシピが見つかりませんでした</span>
     )
   ) : (
-    <span className="text-2xl">ロード中</span>
+    <div
+      style={{ width: '40vw', left: '30vw', height: '20vh', top: '40vh' }}
+      className="fixed flex flex-row items-center justify-center"
+    >
+      <AiOutlineLoading className="text-3xl animate-spin mr-2" />
+      <div className="text-2xl">ロード中</div>
+    </div>
   );
   useEffect(() => {
     (async () => {
