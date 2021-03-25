@@ -99,9 +99,10 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   const handleEnd = (_: React.TouchEvent<HTMLDivElement>) => {
     if (animateState.state == 'moving' && document) {
       const moved = animateState.currentX - animateState.startX;
-      if (moved < -document.body.clientWidth / 2 && posterIdx < props.children.length - 1) {
+      // スワイプで次の要素へ移る処理
+      if (moved < -document.body.clientWidth / 4 && posterIdx < props.children.length - 1) {
         autoSwipeRight();
-      } else if (moved > document.body.clientWidth / 2 && posterIdx > 0) {
+      } else if (moved > document.body.clientWidth / 4 && posterIdx > 0) {
         autoSwipeLeft();
       } else {
         cancelSwipe();
@@ -119,7 +120,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       const touch = e.touches[0];
       const move_direction = Math.abs((animateState.startX - touch.clientX) / (animateState.startY - touch.clientY));
       // magic number
-      if (move_direction > 1.0) {
+      if (move_direction > 1.5) {
         setAnimateState({
           state: 'moving',
           startX: animateState.startX,

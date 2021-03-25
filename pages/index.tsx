@@ -131,13 +131,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         queried: null,
       },
     };
-  } 
-    return {
-      props: {
-        page,
-        search,
-        queried: queried.data.recipes,
-      },
-    };
-  
+  }
+  return {
+    props: {
+      page,
+      search,
+      queried: queried.data.recipes,
+    },
+  };
 };

@@ -82,7 +82,6 @@ export default function MyFolder(props: MyFolderProps) {
         setRecipes([]);
         setPrevExists(false);
         setNextExists(false);
-        
       }
     })();
   }, []);
