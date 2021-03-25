@@ -1,4 +1,4 @@
-import React, { CSSProperties, ReactNodeArray, ReactNode, useState } from 'react';
+import React, { CSSProperties, ReactNodeArray, ReactNode, useState, useRef, useEffect } from 'react';
 
 export type SwipableProps = {
   children: ReactNodeArray;
@@ -27,8 +27,18 @@ const swipeAnimateDuration = 300;
 const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   const [posterIdx, setPosterIdx] = useState(0);
   const [swiped, setSwiped] = useState(false);
-  const [animateState, setAnimateState] = useState<AnimateState>({ state: 'stop' });
-  // これよくないね。class componentにしましょう
+  const refRootDiv = useRef<HTMLDivElement>(null);
+  const [animateState, setAnimateStateOrigin] = useState<AnimateState>({ state: 'stop' });
+  const refAnimateState = useRef(animateState);
+  const setAnimateState = (state: AnimateState) => {
+    setAnimateStateOrigin(state);
+    refAnimateState.current = state;
+  };
+  useEffect(() => {
+    refRootDiv.current?.addEventListener('touchmove', (e) => {
+      handleMove(e);
+    });
+  }, [refRootDiv.current]);
   const swipingToEdge =
     animateState.state == 'moving'
       ? posterIdx == 0
@@ -107,7 +117,6 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     if (animateState.state == 'moving' && document) {
       const moved = animateState.currentX - animateState.startX;
       const accel = animateState.currentX - animateState.beforeX;
-      console.log(accel);
       const swipeableToRight = posterIdx < props.children.length - 1;
       const swipeableToLeft = posterIdx > 0;
       const viewWidth = document.body.clientWidth;
@@ -121,29 +130,34 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       }
     }
   };
-  const handleMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (animateState.state == 'moving') {
-      setAnimateState({
-        state: 'moving',
-        startX: animateState.startX,
-        beforeX: animateState.currentX,
-        currentX: e.touches[0].clientX,
-      });
-    } else if (animateState.state == 'move_start') {
-      const touch = e.touches[0];
-      const move_direction = Math.abs((animateState.startX - touch.clientX) / (animateState.startY - touch.clientY));
-      // magic number
-      if (move_direction > 1.5) {
+  const handleMove = (e: TouchEvent) => {
+    if (refAnimateState.current) {
+      const animateState = refAnimateState.current;
+      if (animateState.state == 'moving') {
+        e.preventDefault();
         setAnimateState({
           state: 'moving',
-          beforeX: animateState.startX,
           startX: animateState.startX,
-          currentX: touch.clientX,
+          beforeX: animateState.currentX,
+          currentX: e.touches[0].clientX,
         });
-      } else {
-        setAnimateState({
-          state: 'scroll',
-        });
+      } else if (animateState.state == 'move_start') {
+        const touch = e.touches[0];
+        const move_direction = Math.abs((animateState.startX - touch.clientX) / (animateState.startY - touch.clientY));
+        // magic number
+        if (move_direction > 1.5) {
+          e.preventDefault();
+          setAnimateState({
+            state: 'moving',
+            beforeX: animateState.startX,
+            startX: animateState.startX,
+            currentX: touch.clientX,
+          });
+        } else {
+          setAnimateState({
+            state: 'scroll',
+          });
+        }
       }
     }
   };
@@ -218,15 +232,15 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     <div style={containerStyle}>
       {naviLeft}
       {naviRight}
-      <div style={rootStyle}>
+      <div
+        style={rootStyle}
+        //onTouchMove={(e) => handleMove(e)}
+        onTouchStart={(e) => handleStart(e)}
+        onTouchEnd={(e) => handleEnd(e)}
+        ref={refRootDiv}
+      >
         {props.children.map((node, i) => (
-          <div
-            key={i}
-            style={posterStyle(i)}
-            onTouchMove={(e) => handleMove(e)}
-            onTouchStart={(e) => handleStart(e)}
-            onTouchEnd={(e) => handleEnd(e)}
-          >
+          <div key={i} style={posterStyle(i)}>
             {node}
           </div>
         ))}
