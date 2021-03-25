@@ -122,6 +122,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   };
   const handleMove = (e: React.TouchEvent<HTMLDivElement>) => {
     if (animateState.state == 'moving') {
+      e.preventDefault();
       setAnimateState({
         state: 'moving',
         startX: animateState.startX,
@@ -133,6 +134,7 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       const move_direction = Math.abs((animateState.startX - touch.clientX) / (animateState.startY - touch.clientY));
       // magic number
       if (move_direction > 1.5) {
+        e.preventDefault();
         setAnimateState({
           state: 'moving',
           beforeX: animateState.startX,
