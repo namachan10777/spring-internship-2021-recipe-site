@@ -48,7 +48,6 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       ? (posterIdx == 0 && animateState.currentX > animateState.startX) ||
         (posterIdx == props.children.length - 1 && animateState.currentX < animateState.startX)
       : false;
-  console.log(swipingToEdge);
   const rootStyle: CSSProperties = {
     position: 'relative',
     transform:
