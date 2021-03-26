@@ -30,6 +30,7 @@ const swipeAnimateDuration = 300;
 const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   const [posterIdx, setPosterIdx] = useState(props.initialIdx ? props.initialIdx : 0);
   const [swiped, setSwiped] = useState(false);
+  const [recipeWatching, setRecipeWatching] = useState(false);
   const refRootDiv = useRef<HTMLDivElement>(null);
   const [animateState, setAnimateStateOrigin] = useState<AnimateState>({ state: 'stop' });
   const refAnimateState = useRef(animateState);
@@ -54,9 +55,13 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
       animateState.state == 'moving'
         ? `translate3d(${(animateState.currentX - animateState.startX) / (swipingToEdge ? 6 : 1.5)}px, 0, 0)`
         : animateState.state == 'right'
-        ? 'translate(-100vw)'
+        ? recipeWatching
+          ? 'translate(-100vw)'
+          : 'translate(-85vw)'
         : animateState.state == 'left'
-        ? 'translate(100vw)'
+        ? recipeWatching
+          ? 'translate(100vw)'
+          : 'translate(85vw)'
         : 'initial',
     transition:
       animateState.state == 'moving' || animateState.state == 'scroll' || animateState.state == 'stop'
@@ -70,32 +75,34 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
   };
   const topMargin = process.browser ? document.documentElement.scrollTop : 0;
   const posterStyle = (id: number): CSSProperties => {
-    if (id == 1 && !swiped && props.indicateAnimation) {
-      // TODO animation
+    if (id == posterIdx) {
       return {
-        position: 'absolute',
-        top: topMargin,
-        left: 0,
-        boxShadow: '-10px 0px 10px rgba(0, 0, 0, 0.4)',
-        animation: props.indicateAnimation,
-        background: 'white',
-        opacity: 1,
+        boxShadow: recipeWatching ? 'none' : '0px 0px 10px 3px #878787',
+        borderRadius: recipeWatching ? undefined : '1rem',
+        width: recipeWatching ? '100vw' : '80vw',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        transition: animateState.state == 'stop' ? 'all 300ms ease 0s' : 'width 300ms ease 0s',
       };
-    } else if (id == posterIdx) {
-      return {};
     } else if (id == posterIdx + 1) {
       return {
+        boxShadow: recipeWatching ? 'none' : '0px 0px 10px 3px #878787',
+        borderRadius: recipeWatching ? undefined : '1rem',
+        width: recipeWatching ? '100vw' : '80vw',
         position: 'absolute',
         top: topMargin,
         left: 0,
-        transform: 'translate(100vw)',
+        transform: recipeWatching ? 'translate(100vw)' : 'translate(95vw)',
       };
     } else if (id == posterIdx - 1) {
       return {
+        boxShadow: recipeWatching ? 'none' : '0px 0px 10px 3px #878787',
+        borderRadius: recipeWatching ? undefined : '1rem',
+        width: recipeWatching ? '100vw' : '80vw',
         position: 'absolute',
         top: topMargin,
         left: 0,
-        transform: 'translate(-100vw)',
+        transform: recipeWatching ? 'translate(-100vw)' : 'translate(-75vw)',
       };
     } else {
       return {
@@ -132,6 +139,11 @@ const Swipeable: React.FC<SwipableProps> = (props: SwipableProps) => {
     }
   };
   const handleMove = (e: TouchEvent) => {
+    if (process.browser && document.documentElement.scrollTop > 30) {
+      setRecipeWatching(true);
+    } else {
+      setRecipeWatching(false);
+    }
     if (refAnimateState.current) {
       const animateState = refAnimateState.current;
       if (animateState.state == 'moving') {
