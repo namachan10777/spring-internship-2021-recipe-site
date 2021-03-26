@@ -55,7 +55,7 @@ export default function RecipePageProps(props: RecipePageProps) {
       </Head>
       <DrawerContainer search="">
         <Swipeable
-          indicateAnimation={'swipe-indication 3s linear 0s infinite'}
+          indicateAnimation="swipe-indication 3s linear 0s infinite"
           naviLeftIcon={
             <MdKeyboardArrowLeft
               className="text-6xl text-white"
